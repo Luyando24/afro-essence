@@ -1,0 +1,133 @@
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  category: string;
+  rating: number;
+  reviews: number;
+}
+
+export const products: Product[] = [
+  {
+    id: '1',
+    name: 'Afro Kinky Curly Bundle',
+    price: 129.99,
+    image: '/products/O1CN01Da2lyL2G0zUST1Ofs_!!2221348218954-0-cib.jpg',
+    description: '100% Virgin Human Hair. Defined tight curls that mimic natural 4C hair texture. Perfect for a bold, natural look.',
+    category: 'Bundles',
+    rating: 5,
+    reviews: 124,
+  },
+  {
+    id: '2',
+    name: 'Deep Wave Luxury Bundle',
+    price: 139.99,
+    image: '/products/O1CN01N23WUW1XNkQ0pBnuk_!!2216802942912-0-cib.jpg',
+    description: 'Beautiful deep waves that offer volume and elegance. Soft, tangle-free, and easy to maintain.',
+    category: 'Bundles',
+    rating: 4.8,
+    reviews: 89,
+  },
+  {
+    id: '3',
+    name: 'Silky Straight Bundle',
+    price: 119.99,
+    image: '/products/O1CN01RYnR551fsuHOJPb5X_!!2219827714063-0-cib.jpg',
+    description: 'Bone straight hair with a natural shine. Can be dyed, curled, and styled as desired.',
+    category: 'Bundles',
+    rating: 4.9,
+    reviews: 210,
+  },
+  {
+    id: '4',
+    name: 'Body Wave Bundle',
+    price: 125.99,
+    image: '/products/O1CN01TQaAhk1XNkQ1q9LBU_!!2216802942912-0-cib.jpg',
+    description: 'Classic body wave texture. Versatile and full of bounce. A customer favorite.',
+    category: 'Bundles',
+    rating: 4.7,
+    reviews: 156,
+  },
+  {
+    id: '5',
+    name: 'Kinky Straight Clip-ins',
+    price: 149.99,
+    image: '/products/O1CN01hwVOPJ1YvvXdgVilS_!!2213303343122-0-cib.jpg',
+    description: 'Add length and volume instantly with our seamless clip-ins. Blends perfectly with blown-out natural hair.',
+    category: 'Clip-ins',
+    rating: 4.9,
+    reviews: 78,
+  },
+  {
+    id: '6',
+    name: 'Curly Ponytail Extension',
+    price: 69.99,
+    image: '/products/O1CN01i167Jl23vhT7G9Jqa_!!2219775137318-0-cib.jpg',
+    description: 'Drawstring ponytail for a quick and chic updo. Matches 3B-3C curl patterns.',
+    category: 'Ponytails',
+    rating: 4.6,
+    reviews: 45,
+  },
+  {
+    id: '7',
+    name: 'HD Lace Frontal (13x4)',
+    price: 189.99,
+    image: '/products/O1CN01kfCamW1tqWrE8wdWU_!!2220042935953-0-cib.jpg',
+    description: 'Ultra-thin HD lace that melts into your skin. Pre-plucked hairline for the most natural look.',
+    category: 'Closures & Frontals',
+    rating: 5,
+    reviews: 67,
+  },
+  {
+    id: '8',
+    name: 'Transparent Lace Closure (4x4)',
+    price: 99.99,
+    image: '/products/O1CN01mLs8y52G0zURiCd4z_!!2221348218954-0-cib.jpg',
+    description: 'High-quality transparent lace closure. Protect your natural hair while looking fabulous.',
+    category: 'Closures & Frontals',
+    rating: 4.8,
+    reviews: 92,
+  },
+  {
+    id: '9',
+    name: 'Water Wave Wig',
+    price: 249.99,
+    image: '/products/O1CN01p4jgJX23vhT7G7J0k_!!2219775137318-0-cib.jpg',
+    description: 'Wet and wavy look. Glueless unit with adjustable straps. Ready to wear.',
+    category: 'Wigs',
+    rating: 4.9,
+    reviews: 134,
+  },
+  {
+    id: '10',
+    name: 'Bob Straight Wig',
+    price: 199.99,
+    image: '/products/O1CN01pRzXew1ljdw6TDQdt_!!3975124855-0-cib.jpg',
+    description: 'Chic and timeless bob cut. 150% density for a full look.',
+    category: 'Wigs',
+    rating: 4.7,
+    reviews: 56,
+  },
+  {
+    id: '11',
+    name: 'Tape-in Extensions (Straight)',
+    price: 159.99,
+    image: '/products/O1CN01rxB7jQ1YvvXhs1OgP_!!2213303343122-0-cib.jpg',
+    description: 'Semi-permanent extensions for added length and volume. Lays flat against the scalp.',
+    category: 'Tape-ins',
+    rating: 4.5,
+    reviews: 34,
+  },
+  {
+    id: '12',
+    name: 'Jerry Curl Bundle',
+    price: 134.99,
+    image: '/products/O1CN01ymcPKh2G0zUSCDhMt_!!2221348218954-0-cib.jpg',
+    description: 'Tight, springy curls. High luster and very soft. Perfect for a wet look style.',
+    category: 'Bundles',
+    rating: 4.8,
+    reviews: 112,
+  },
+];
