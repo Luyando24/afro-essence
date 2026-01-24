@@ -59,11 +59,11 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300 text-sm">123 Beauty Lane, New York, NY 10001</span>
+                <span className="text-gray-300 text-sm">No. 88, Hair Avenue, Guangzhou, China</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-300 text-sm">+86 151 1033 5070</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0" />

@@ -46,7 +46,7 @@ export default function ContactPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Phone</h3>
-                  <p className="mt-1 text-gray-600 dark:text-gray-300">+1 (555) 123-4567</p>
+                  <p className="mt-1 text-gray-600 dark:text-gray-300">+86 151 1033 5070</p>
                   <p className="text-sm text-gray-500">Mon-Fri 9am to 6pm EST</p>
                 </div>
               </div>
@@ -73,8 +73,8 @@ export default function ContactPage() {
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Office</h3>
                   <p className="mt-1 text-gray-600 dark:text-gray-300">
-                    123 Beauty Lane<br />
-                    New York, NY 10001
+                    No. 88, Hair Avenue<br />
+                    Guangzhou, China
                   </p>
                 </div>
               </div>
