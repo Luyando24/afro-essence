@@ -6,10 +6,19 @@ import { supabase } from "@/lib/supabase";
 
 export default async function Home() {
   // Fetch products from Supabase
-  const { data: dbProducts } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: true });
+  let dbProducts = null;
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: true });
+    
+    if (!error && data) {
+      dbProducts = data;
+    }
+  } catch (err) {
+    console.warn("Could not query Supabase products table during pre-rendering, falling back to local dataset.", err);
+  }
 
   const activeProducts = dbProducts && dbProducts.length > 0 ? dbProducts : fallbackProducts;
   const featuredProducts = activeProducts.slice(0, 4);
