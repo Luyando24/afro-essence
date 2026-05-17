@@ -1,10 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import { products } from "@/data/products";
+import { products as fallbackProducts } from "@/data/products";
 import { ArrowRight, Star } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-export default function Home() {
-  const featuredProducts = products.slice(0, 4);
+export default async function Home() {
+  // Fetch products from Supabase
+  const { data: dbProducts } = await supabase
+    .from("products")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  const activeProducts = dbProducts && dbProducts.length > 0 ? dbProducts : fallbackProducts;
+  const featuredProducts = activeProducts.slice(0, 4);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -41,7 +49,7 @@ export default function Home() {
         <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-1/2">
            {/* Placeholder for Hero Image - using a product image for now if no specific hero asset */}
            <Image
-             src={products[0].image}
+             src={activeProducts[0]?.image || fallbackProducts[0].image}
              alt="Model with beautiful hair"
              fill
              className="object-cover"
