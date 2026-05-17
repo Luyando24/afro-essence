@@ -2,14 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, ShoppingBag, Search, User as UserIcon } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { cartCount, setIsCartOpen } = useCart();
   const { user, signOut } = useAuth();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <nav className="bg-white dark:bg-zinc-900 border-b border-primary/20 sticky top-0 z-50">

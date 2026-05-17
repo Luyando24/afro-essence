@@ -1,8 +1,14 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 
 export default function ChatWidget() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
   const whatsappNumber = "8615110335070";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 

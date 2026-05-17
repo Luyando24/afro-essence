@@ -1,7 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
   return (
     <footer className="bg-secondary text-white pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,6 +56,11 @@ export default function Footer() {
               <li>
                 <Link href="/faq" className="text-gray-300 hover:text-primary transition-colors text-sm">
                   FAQs
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin" className="text-gray-300 hover:text-primary transition-colors text-sm font-semibold border-t border-white/10 pt-2 block">
+                  Admin Panel
                 </Link>
               </li>
             </ul>

@@ -14,6 +14,7 @@ interface Product {
   name: string;
   price: number;
   image: string;
+  images?: string[];
   description: string;
   category: string;
   rating: number;
@@ -43,6 +44,7 @@ export default function ProductDetailPage() {
   const [selectedLength, setSelectedLength] = useState('18"');
   const [quantity, setQuantity] = useState(1);
   const [isCopied, setIsCopied] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
 
   // Review Form State
   const [reviewName, setReviewName] = useState("");
@@ -90,6 +92,7 @@ export default function ProductDetailPage() {
         }
 
         setProduct(currentProduct);
+        setSelectedImage(currentProduct.image);
 
         // 2. Fetch Product Reviews
         const { data: dbReviews } = await supabase
@@ -225,26 +228,69 @@ export default function ProductDetailPage() {
           <div className="product-image-gallery space-y-4">
             <div className="aspect-[4/5] relative rounded-lg overflow-hidden bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-md">
               <Image
-                src={product.image}
+                src={selectedImage || product.image}
                 alt={product.name}
                 fill
                 className="object-cover"
                 priority
               />
             </div>
-            {/* Thumbnails (Mockup) */}
-            <div className="grid grid-cols-4 gap-4">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className={`aspect-square relative rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-900 cursor-pointer border ${i === 0 ? 'ring-2 ring-primary border-transparent' : 'border-gray-200 dark:border-zinc-800 hover:opacity-75'}`}>
+            {/* Thumbnails */}
+            {product.images && product.images.length > 0 ? (
+              <div className="grid grid-cols-5 gap-3">
+                <div 
+                  onClick={() => setSelectedImage(product.image)}
+                  className={`aspect-square relative rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-900 cursor-pointer border transition-all ${
+                    (selectedImage || product.image) === product.image 
+                      ? 'ring-2 ring-primary border-transparent scale-95 shadow-sm' 
+                      : 'border-gray-200 dark:border-zinc-800 hover:opacity-75'
+                  }`}
+                >
                   <Image
                     src={product.image}
-                    alt={`${product.name} view ${i + 1}`}
+                    alt={product.name}
                     fill
                     className="object-cover"
                   />
                 </div>
-              ))}
-            </div>
+                {product.images.map((img, idx) => (
+                  <div 
+                    key={idx}
+                    onClick={() => setSelectedImage(img)}
+                    className={`aspect-square relative rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-900 cursor-pointer border transition-all ${
+                      selectedImage === img 
+                        ? 'ring-2 ring-primary border-transparent scale-95 shadow-sm' 
+                        : 'border-gray-200 dark:border-zinc-800 hover:opacity-75'
+                    }`}
+                  >
+                    <Image
+                      src={img}
+                      alt={`${product.name} thumbnail ${idx + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              /* Thumbnails (Mockup Fallback) */
+              <div className="grid grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    onClick={() => setSelectedImage(product.image)}
+                    className={`aspect-square relative rounded-md overflow-hidden bg-gray-100 dark:bg-zinc-900 cursor-pointer border ${i === 0 ? 'ring-2 ring-primary border-transparent' : 'border-gray-200 dark:border-zinc-800 hover:opacity-75'}`}
+                  >
+                    <Image
+                      src={product.image}
+                      alt={`${product.name} view ${i + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
