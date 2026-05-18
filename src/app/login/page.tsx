@@ -74,7 +74,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-zinc-955 min-h-screen py-24 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-24 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-primary/20 rounded-lg shadow-xl overflow-hidden relative">
         
         {/* Glow Accent */}
@@ -151,7 +151,7 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                 />
               </div>
             </div>
@@ -171,7 +171,7 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                 />
               </div>
             </div>

@@ -546,7 +546,7 @@ export default function ProductDetailPage() {
                   {reviews.map((rev) => (
                     <div 
                       key={rev.id} 
-                      className="bg-gray-50/50 dark:bg-zinc-900/30 p-5 rounded-lg border border-gray-150 dark:border-zinc-850 flex flex-col space-y-2 shadow-sm"
+                      className="bg-gray-50/50 dark:bg-zinc-900/30 p-5 rounded-lg border border-gray-150 dark:border-zinc-800 flex flex-col space-y-2 shadow-sm"
                     >
                       <div className="flex justify-between items-center">
                         <span className="font-bold text-sm text-gray-950 dark:text-white">{rev.name}</span>

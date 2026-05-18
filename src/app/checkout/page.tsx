@@ -153,7 +153,7 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-gray-50 dark:bg-zinc-955 min-h-screen py-24 flex items-center justify-center">
+      <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-24 flex items-center justify-center">
         <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-primary/10 rounded-lg p-8 shadow-md text-center space-y-6">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto">
             <ShoppingBag className="h-8 w-8" />
@@ -217,7 +217,7 @@ export default function CheckoutPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="e.g. sandra@example.com"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                 />
               </div>
 
@@ -233,7 +233,7 @@ export default function CheckoutPage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Sandra"
-                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                   />
                 </div>
                 <div>
@@ -246,7 +246,7 @@ export default function CheckoutPage() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Mumba"
-                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                   />
                 </div>
               </div>
@@ -262,7 +262,7 @@ export default function CheckoutPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="123 Leopards Hill Road"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                 />
               </div>
 
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     placeholder="Lusaka"
-                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                   />
                 </div>
                 <div>
@@ -291,7 +291,7 @@ export default function CheckoutPage() {
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="10101"
-                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                    className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                   />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function CheckoutPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+260 97 1234567"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-850 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
                 />
               </div>
 
@@ -352,7 +352,7 @@ export default function CheckoutPage() {
               {/* Items List */}
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 mb-6">
                 {cartItems.map((item) => (
-                  <div key={item.cartItemId} className="flex items-center space-x-3 pb-4 border-b border-gray-50 dark:border-zinc-850 last:border-0 last:pb-0">
+                  <div key={item.cartItemId} className="flex items-center space-x-3 pb-4 border-b border-gray-50 dark:border-zinc-800 last:border-0 last:pb-0">
                     <div className="w-12 h-16 relative rounded overflow-hidden bg-gray-100 border flex-shrink-0">
                       <Image
                         src={item.image}

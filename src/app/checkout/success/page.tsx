@@ -108,7 +108,7 @@ function SuccessReceiptContent() {
 
   if (error || !order) {
     return (
-      <div className="bg-gray-50 dark:bg-zinc-955 min-h-screen py-24 flex items-center justify-center">
+      <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-24 flex items-center justify-center">
         <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-red-200 rounded-lg p-8 shadow-md text-center space-y-6">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-500 mx-auto">
             <ShoppingBag className="h-8 w-8" />
@@ -133,7 +133,7 @@ function SuccessReceiptContent() {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-zinc-955 min-h-screen py-16">
+    <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-16">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Success Header Card */}
