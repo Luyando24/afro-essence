@@ -18,7 +18,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Retrieve active session user
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error) {
+        console.warn("Auth initialization warning:", error.message);
+        if (error.message.toLowerCase().includes("refresh token")) {
+          // Clear bad session tokens from local state
+          supabase.auth.signOut().finally(() => {
+            setUser(null);
+            setLoading(false);
+          });
+          return;
+        }
+      }
       setUser(user);
       setLoading(false);
     });
