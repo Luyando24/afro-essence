@@ -1,11 +1,25 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function Footer() {
   const pathname = usePathname();
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    supabase
+      .from("store_settings")
+      .select("*")
+      .eq("id", 1)
+      .single()
+      .then(({ data }) => {
+        if (data) setSettings(data);
+      });
+  }, []);
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -22,15 +36,17 @@ export default function Footer() {
               Ethically sourced and crafted with perfection.
             </p>
             <div className="flex space-x-4 pt-4">
-              <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+              <a href={settings?.instagram || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-primary transition-colors">
+              <a href={settings?.facebook || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
+              {settings?.tiktok && (
+                <a href={settings.tiktok} target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors font-bold text-lg leading-none">
+                  <span className="flex items-center justify-center h-5 w-5 text-center leading-none" style={{ fontFamily: 'monospace' }}>t</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -67,15 +83,15 @@ export default function Footer() {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300 text-sm">No. 88, Hair Avenue, Guangzhou, China</span>
+                <span className="text-gray-300 text-sm whitespace-pre-line">{settings?.address || "No. 88, Hair Avenue\nGuangzhou, China"}</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300 text-sm">+86 151 1033 5070</span>
+                <span className="text-gray-300 text-sm">{settings?.phone || "+86 151 1033 5070"}</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                <span className="text-gray-300 text-sm">hello@afroessence.com</span>
+                <span className="text-gray-300 text-sm">{settings?.email || "hello@afroessence.com"}</span>
               </li>
             </ul>
           </div>

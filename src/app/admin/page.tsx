@@ -28,7 +28,8 @@ import {
   Pencil,
   Upload,
   Menu,
-  X
+  X,
+  Settings
 } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import { supabase } from "@/lib/supabase";
@@ -38,7 +39,7 @@ export default function AdminDashboardPage() {
   const { user, signOut, loading: authLoading } = useAuth();
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "reviews">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "reviews" | "settings">("overview");
 
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function AdminDashboardPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [storeSettings, setStoreSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -101,6 +103,17 @@ export default function AdminDashboardPage() {
       if (revError) throw revError;
       setReviews(revData || []);
 
+      // 4. Fetch Store Settings
+      const { data: settingsData, error: settingsError } = await supabase
+        .from("store_settings")
+        .select("*")
+        .eq("id", 1)
+        .single();
+        
+      if (!settingsError && settingsData) {
+        setStoreSettings(settingsData);
+      }
+
     } catch (err: any) {
       console.error("Dashboard database fetch failed:", err);
       setError(err.message || "Failed to load dashboard parameters. Please check your credentials.");
@@ -125,8 +138,8 @@ export default function AdminDashboardPage() {
     if (typeof window !== "undefined") {
       const searchParams = new URLSearchParams(window.location.search);
       const tabParam = searchParams.get("tab");
-      if (tabParam === "products" || tabParam === "orders" || tabParam === "reviews" || tabParam === "overview") {
-        setActiveTab(tabParam);
+      if (tabParam === "products" || tabParam === "orders" || tabParam === "reviews" || tabParam === "overview" || tabParam === "settings") {
+        setActiveTab(tabParam as any);
       }
     }
     
@@ -215,6 +228,22 @@ export default function AdminDashboardPage() {
     } catch (err: any) {
       console.error("Failed to delete review:", err);
       alert("Failed to delete review: " + err.message);
+    }
+  };
+
+  // Save Settings
+  const handleSaveSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { error: settingsError } = await supabase
+        .from("store_settings")
+        .upsert({ ...storeSettings, id: 1, updated_at: new Date().toISOString() });
+
+      if (settingsError) throw settingsError;
+      alert("Store settings updated successfully!");
+    } catch (err: any) {
+      console.error("Failed to save settings:", err);
+      alert("Failed to save settings: " + err.message);
     }
   };
 
@@ -374,6 +403,18 @@ export default function AdminDashboardPage() {
             <MessageSquare className="h-4 w-4 mr-3 shrink-0" /> 
             <span>Reviews Moderator</span>
           </button>
+          
+          <button
+            onClick={() => { setActiveTab("settings"); setIsMobileMenuOpen(false); }}
+            className={`w-full flex items-center px-4 py-3 rounded text-sm font-semibold transition-all ${
+              activeTab === "settings"
+                ? "bg-primary text-white shadow-md shadow-primary/20"
+                : "text-gray-600 hover:bg-gray-100/80 hover:text-gray-900"
+            }`}
+          >
+            <Settings className="h-4 w-4 mr-3 shrink-0" /> 
+            <span>Store Settings</span>
+          </button>
         </div>
 
         {/* User profile section & Sign Out */}
@@ -424,8 +465,9 @@ export default function AdminDashboardPage() {
                   {activeTab === "products" && <Package className="h-5 w-5 text-primary" />}
                   {activeTab === "orders" && <ShoppingBag className="h-5 w-5 text-primary" />}
                   {activeTab === "reviews" && <MessageSquare className="h-5 w-5 text-primary" />}
+                  {activeTab === "settings" && <Settings className="h-5 w-5 text-primary" />}
                 </span>
-                <span>{activeTab === "overview" ? "Dashboard Overview" : activeTab + " Manager"}</span>
+                <span>{activeTab === "overview" ? "Dashboard Overview" : activeTab === "settings" ? "Store Settings" : activeTab + " Manager"}</span>
               </h2>
             </div>
           </div>
@@ -1207,6 +1249,87 @@ export default function AdminDashboardPage() {
                   )}
                 </div>
 
+              </div>
+            )}
+
+            {/* 5. SETTINGS TAB */}
+            {activeTab === "settings" && (
+              <div className="space-y-6">
+                <div className="bg-white p-6 border border-gray-100 rounded-lg shadow-sm">
+                  <h3 className="font-serif text-lg font-bold text-gray-900 mb-6">Contact & Social Settings</h3>
+                  {storeSettings ? (
+                    <form onSubmit={handleSaveSettings} className="space-y-4 max-w-2xl">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Email</label>
+                          <input
+                            type="email"
+                            value={storeSettings.email || ""}
+                            onChange={(e) => setStoreSettings({...storeSettings, email: e.target.value})}
+                            className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Phone</label>
+                          <input
+                            type="text"
+                            value={storeSettings.phone || ""}
+                            onChange={(e) => setStoreSettings({...storeSettings, phone: e.target.value})}
+                            className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Office Address</label>
+                        <textarea
+                          rows={2}
+                          value={storeSettings.address || ""}
+                          onChange={(e) => setStoreSettings({...storeSettings, address: e.target.value})}
+                          className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">TikTok</label>
+                          <input
+                            type="url"
+                            value={storeSettings.tiktok || ""}
+                            onChange={(e) => setStoreSettings({...storeSettings, tiktok: e.target.value})}
+                            className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                            placeholder="https://tiktok.com/..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Facebook</label>
+                          <input
+                            type="url"
+                            value={storeSettings.facebook || ""}
+                            onChange={(e) => setStoreSettings({...storeSettings, facebook: e.target.value})}
+                            className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                            placeholder="https://facebook.com/..."
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Instagram</label>
+                          <input
+                            type="url"
+                            value={storeSettings.instagram || ""}
+                            onChange={(e) => setStoreSettings({...storeSettings, instagram: e.target.value})}
+                            className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
+                            placeholder="https://instagram.com/..."
+                          />
+                        </div>
+                      </div>
+                      <div className="pt-4">
+                        <button type="submit" className="bg-primary text-white px-6 py-2.5 rounded text-sm font-bold shadow-md hover:bg-secondary transition-colors">
+                          Save Settings
+                        </button>
+                      </div>
+                    </form>
+                  ) : (
+                    <div className="text-sm text-gray-500">Settings not found. Fetching...</div>
+                  )}
+                </div>
               </div>
             )}
 

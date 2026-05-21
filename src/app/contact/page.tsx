@@ -1,10 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    supabase
+      .from("store_settings")
+      .select("*")
+      .eq("id", 1)
+      .single()
+      .then(({ data }) => {
+        if (data) setSettings(data);
+      });
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +59,7 @@ export default function ContactPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Phone</h3>
-                  <p className="mt-1 text-gray-600 dark:text-gray-300">+86 151 1033 5070</p>
+                  <p className="mt-1 text-gray-600 dark:text-gray-300">{settings?.phone || "+86 151 1033 5070"}</p>
                   <p className="text-sm text-gray-500">Mon-Fri 9am to 6pm EST</p>
                 </div>
               </div>
@@ -59,7 +72,7 @@ export default function ContactPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Email</h3>
-                  <p className="mt-1 text-gray-600 dark:text-gray-300">hello@afroessence.com</p>
+                  <p className="mt-1 text-gray-600 dark:text-gray-300">{settings?.email || "hello@afroessence.com"}</p>
                   <p className="text-sm text-gray-500">We reply within 24 hours</p>
                 </div>
               </div>
@@ -72,9 +85,8 @@ export default function ContactPage() {
                 </div>
                 <div className="ml-4">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white">Office</h3>
-                  <p className="mt-1 text-gray-600 dark:text-gray-300">
-                    No. 88, Hair Avenue<br />
-                    Guangzhou, China
+                  <p className="mt-1 text-gray-600 dark:text-gray-300 whitespace-pre-line">
+                    {settings?.address || "No. 88, Hair Avenue\nGuangzhou, China"}
                   </p>
                 </div>
               </div>
