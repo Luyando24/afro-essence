@@ -283,7 +283,7 @@ export default function AdminDashboardPage() {
         .upsert({ ...storeSettings, logo_url: finalLogoUrl, id: 1, updated_at: new Date().toISOString() });
 
       if (settingsError) throw settingsError;
-      setStoreSettings(prev => ({...prev, logo_url: finalLogoUrl}));
+      setStoreSettings((prev: any) => ({...prev, logo_url: finalLogoUrl}));
       setLogoFile(null); // Clear file after upload
       alert("Store settings updated successfully!");
     } catch (err: any) {
