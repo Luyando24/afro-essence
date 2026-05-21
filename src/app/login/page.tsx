@@ -46,7 +46,8 @@ function LoginForm() {
         } else if (data?.user) {
           setIsSuccess(true);
           setMessage("Welcome! Your account has been created successfully.");
-          setTimeout(() => router.push(redirectTo), 1500);
+          const finalRedirect = email.trim().toLowerCase().includes('admin') ? '/admin' : redirectTo;
+          setTimeout(() => router.push(finalRedirect), 1500);
         }
 
       } else {
@@ -61,7 +62,8 @@ function LoginForm() {
         if (data?.user) {
           setIsSuccess(true);
           setMessage("Signed in successfully! Welcome back.");
-          setTimeout(() => router.push(redirectTo), 1500);
+          const finalRedirect = email.trim().toLowerCase().includes('admin') ? '/admin' : redirectTo;
+          setTimeout(() => router.push(finalRedirect), 1500);
         }
       }
     } catch (err: any) {

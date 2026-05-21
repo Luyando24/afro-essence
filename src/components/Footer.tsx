@@ -58,11 +58,6 @@ export default function Footer() {
                   FAQs
                 </Link>
               </li>
-              <li>
-                <Link href="/admin" className="text-gray-300 hover:text-primary transition-colors text-sm font-semibold border-t border-white/10 pt-2 block">
-                  Admin Panel
-                </Link>
-              </li>
             </ul>
           </div>
 
