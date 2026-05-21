@@ -12,6 +12,8 @@ export interface StoreSettings {
   facebook?: string;
   instagram?: string;
   logo_url?: string;
+  aud_rate?: number;
+  ngn_rate?: number;
 }
 
 interface StoreSettingsContextType {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useStoreSettings } from "./StoreSettingsContext";
 
 export type Currency = "NGN" | "AUD";
 
@@ -21,6 +22,7 @@ const EXCHANGE_RATES: Record<Currency, number> = {
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<Currency>("NGN");
   const [isClient, setIsClient] = useState(false);
+  const { settings } = useStoreSettings();
 
   useEffect(() => {
     setIsClient(true);
@@ -42,7 +44,17 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     
     // Ensure amount is a valid number
     const safeAmount = Number(amountInUsd) || 0;
-    const convertedAmount = safeAmount * EXCHANGE_RATES[activeCurrency];
+    
+    // Use rates from settings if loaded, otherwise fall back to static rates
+    const ngnRate = settings?.ngn_rate ? Number(settings.ngn_rate) : 1500;
+    const audRate = settings?.aud_rate ? Number(settings.aud_rate) : 1.5;
+    
+    const rates: Record<Currency, number> = {
+      NGN: ngnRate,
+      AUD: audRate,
+    };
+    
+    const convertedAmount = safeAmount * rates[activeCurrency];
 
     if (activeCurrency === "NGN") {
       // NGN usually formatted without cents

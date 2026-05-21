@@ -278,12 +278,27 @@ export default function AdminDashboardPage() {
         finalLogoUrl = publicData.publicUrl;
       }
 
+      const parsedAudRate = parseFloat(storeSettings.aud_rate) || 1.5;
+      const parsedNgnRate = parseFloat(storeSettings.ngn_rate) || 1500.0;
+
       const { error: settingsError } = await supabase
         .from("store_settings")
-        .upsert({ ...storeSettings, logo_url: finalLogoUrl, id: 1, updated_at: new Date().toISOString() });
+        .upsert({ 
+          ...storeSettings, 
+          logo_url: finalLogoUrl, 
+          aud_rate: parsedAudRate,
+          ngn_rate: parsedNgnRate,
+          id: 1, 
+          updated_at: new Date().toISOString() 
+        });
 
       if (settingsError) throw settingsError;
-      setStoreSettings((prev: any) => ({...prev, logo_url: finalLogoUrl}));
+      setStoreSettings((prev: any) => ({
+        ...prev, 
+        logo_url: finalLogoUrl,
+        aud_rate: parsedAudRate,
+        ngn_rate: parsedNgnRate
+      }));
       setLogoFile(null); // Clear file after upload
       alert("Store settings updated successfully!");
     } catch (err: any) {
@@ -1369,6 +1384,45 @@ export default function AdminDashboardPage() {
                           onChange={(e) => setStoreSettings({...storeSettings, address: e.target.value})}
                           className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary"
                         />
+                      </div>
+                      <div className="pt-6 border-t border-gray-100">
+                        <h4 className="font-serif text-base font-bold text-gray-900 mb-4">Currency Exchange Rates (Base: USD)</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                              AUD Exchange Rate (1 USD = ? AUD)
+                            </label>
+                            <input
+                              type="number"
+                              step="0.0001"
+                              value={storeSettings.aud_rate ?? ""}
+                              onChange={(e) => setStoreSettings({...storeSettings, aud_rate: e.target.value})}
+                              className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary text-gray-950"
+                              placeholder="e.g. 1.5"
+                              required
+                            />
+                            <span className="block text-[10px] text-gray-400 mt-1">
+                              Current static rate is 1.5. Sets how many Australian Dollars equal 1 US Dollar.
+                            </span>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                              NGN Exchange Rate (1 USD = ? NGN)
+                            </label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              value={storeSettings.ngn_rate ?? ""}
+                              onChange={(e) => setStoreSettings({...storeSettings, ngn_rate: e.target.value})}
+                              className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary text-gray-950"
+                              placeholder="e.g. 1500"
+                              required
+                            />
+                            <span className="block text-[10px] text-gray-400 mt-1">
+                              Current static rate is 1500. Sets how many Nigerian Naira equal 1 US Dollar.
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-gray-100">
                         <div>
