@@ -21,7 +21,7 @@ export default async function Home() {
     console.warn("Could not query Supabase products table during pre-rendering, falling back to local dataset.", err);
   }
 
-  const activeProducts = dbProducts && dbProducts.length > 0 ? dbProducts : fallbackProducts;
+  const activeProducts = dbProducts !== null ? dbProducts : fallbackProducts;
   const featuredProducts = activeProducts.slice(0, 4);
 
   return (

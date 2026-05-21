@@ -37,7 +37,7 @@ export default function ShopPage() {
 
         if (error) throw error;
 
-        if (data && data.length > 0) {
+        if (data) {
           // Map reviews_count to reviews for compatibility
           const mapped = data.map((item: any) => ({
             ...item,

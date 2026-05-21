@@ -73,6 +73,15 @@ export default function ProductDetailPage() {
         let currentProduct: Product;
 
         if (prodError || !dbProduct) {
+          const isNotFoundError = prodError?.code === 'PGRST116';
+          const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && 
+            process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co';
+
+          if (isNotFoundError || isSupabaseConfigured) {
+            router.push("/404");
+            return;
+          }
+
           // Attempt to search fallback
           const foundFallback = fallbackProducts.find((p) => p.id === id);
           if (foundFallback) {
@@ -115,8 +124,11 @@ export default function ProductDetailPage() {
           .neq("id", currentProduct.id)
           .limit(4);
 
-        if (dbRelated && dbRelated.length > 0) {
-          setRelatedProducts(dbRelated.map((p: any) => ({
+        const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && 
+          process.env.NEXT_PUBLIC_SUPABASE_URL !== 'https://placeholder.supabase.co';
+
+        if (dbRelated && (dbRelated.length > 0 || isSupabaseConfigured)) {
+          setRelatedProducts((dbRelated || []).map((p: any) => ({
             ...p,
             price: Number(p.price),
             rating: Number(p.rating)
