@@ -1,23 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useStoreSettings } from "@/components/StoreSettingsContext";
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success'>('idle');
-  const [settings, setSettings] = useState<any>(null);
-
-  useEffect(() => {
-    supabase
-      .from("store_settings")
-      .select("*")
-      .eq("id", 1)
-      .single()
-      .then(({ data }) => {
-        if (data) setSettings(data);
-      });
-  }, []);
+  const { settings } = useStoreSettings();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
