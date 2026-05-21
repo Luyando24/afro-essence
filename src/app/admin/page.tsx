@@ -53,6 +53,11 @@ export default function AdminDashboardPage() {
   const [storeSettings, setStoreSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  // Logo upload state
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>("");
+  const [savingSettings, setSavingSettings] = useState(false);
 
   // Search & Filter state
   const [productSearch, setProductSearch] = useState("");
@@ -114,6 +119,9 @@ export default function AdminDashboardPage() {
         
       if (!settingsError && settingsData) {
         setStoreSettings(settingsData);
+        if (settingsData.logo_url) {
+          setLogoPreview(settingsData.logo_url);
+        }
       }
 
     } catch (err: any) {
@@ -233,19 +241,56 @@ export default function AdminDashboardPage() {
     }
   };
 
+  // Logo File Change
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setLogoFile(file);
+      setLogoPreview(URL.createObjectURL(file));
+    }
+  };
+
   // Save Settings
   const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (savingSettings) return;
+
     try {
+      setSavingSettings(true);
+      let finalLogoUrl = storeSettings?.logo_url || "";
+
+      // Upload logo if a new one was selected
+      if (logoFile) {
+        const fileExt = logoFile.name.split('.').pop();
+        const fileName = `logo-${Date.now()}.${fileExt}`;
+        const filePath = `store/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('product-images')
+          .upload(filePath, logoFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicData } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+
+        finalLogoUrl = publicData.publicUrl;
+      }
+
       const { error: settingsError } = await supabase
         .from("store_settings")
-        .upsert({ ...storeSettings, id: 1, updated_at: new Date().toISOString() });
+        .upsert({ ...storeSettings, logo_url: finalLogoUrl, id: 1, updated_at: new Date().toISOString() });
 
       if (settingsError) throw settingsError;
+      setStoreSettings(prev => ({...prev, logo_url: finalLogoUrl}));
+      setLogoFile(null); // Clear file after upload
       alert("Store settings updated successfully!");
     } catch (err: any) {
       console.error("Failed to save settings:", err);
       alert("Failed to save settings: " + err.message);
+    } finally {
+      setSavingSettings(false);
     }
   };
 
@@ -1261,6 +1306,41 @@ export default function AdminDashboardPage() {
                   <h3 className="font-serif text-lg font-bold text-gray-900 mb-6">Contact & Social Settings</h3>
                   {storeSettings ? (
                     <form onSubmit={handleSaveSettings} className="space-y-4 max-w-2xl">
+                      <div className="mb-6 bg-gray-50/50 p-6 border border-gray-200 rounded-xl">
+                        <span className="block text-xs font-bold text-gray-950 uppercase tracking-wider mb-1">
+                          Website Logo
+                        </span>
+                        <span className="block text-[10px] text-gray-400 mb-4">
+                          Upload a logo to display in the header and footer (PNG or transparent background recommended).
+                        </span>
+                        
+                        <div className="flex items-start gap-6">
+                          {logoPreview ? (
+                            <div className="relative h-24 w-48 bg-white border border-gray-200 rounded-lg overflow-hidden flex-shrink-0 group shadow-sm flex items-center justify-center p-2">
+                              <Image src={logoPreview} alt="Store Logo Preview" fill className="object-contain" />
+                              <button 
+                                type="button" 
+                                onClick={() => { setLogoFile(null); setLogoPreview(""); setStoreSettings({...storeSettings, logo_url: ""}); }}
+                                className="absolute top-1 right-1 bg-black/60 hover:bg-red-655 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-all text-[10px] font-bold shadow-md z-10"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="relative h-24 w-48 border-2 border-dashed border-gray-250 hover:border-primary/50 transition-all rounded-lg flex flex-col items-center justify-center bg-white cursor-pointer group shadow-sm flex-shrink-0">
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleLogoChange} 
+                                className="absolute inset-0 opacity-0 cursor-pointer" 
+                              />
+                              <Upload className="h-5 w-5 text-gray-400 group-hover:text-primary transition-colors mb-2" />
+                              <span className="text-[10px] font-bold text-gray-500 group-hover:text-primary transition-colors">Select Logo</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Email</label>
@@ -1323,8 +1403,15 @@ export default function AdminDashboardPage() {
                         </div>
                       </div>
                       <div className="pt-4">
-                        <button type="submit" className="bg-primary text-white px-6 py-2.5 rounded text-sm font-bold shadow-md hover:bg-secondary transition-colors">
-                          Save Settings
+                        <button type="submit" disabled={savingSettings} className="bg-primary text-white px-6 py-2.5 rounded text-sm font-bold shadow-md hover:bg-secondary transition-colors flex items-center disabled:opacity-50">
+                          {savingSettings ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                              Saving...
+                            </>
+                          ) : (
+                            "Save Settings"
+                          )}
                         </button>
                       </div>
                     </form>

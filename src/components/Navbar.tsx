@@ -7,6 +7,8 @@ import { Menu, X, ShoppingBag, Search, User as UserIcon } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
 import { useCurrency, Currency } from "./CurrencyContext";
+import { useStoreSettings } from "./StoreSettingsContext";
+import Image from "next/image";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -14,6 +16,7 @@ export default function Navbar() {
   const { cartCount, setIsCartOpen } = useCart();
   const { user, signOut } = useAuth();
   const { currency, setCurrency } = useCurrency();
+  const { settings } = useStoreSettings();
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -25,8 +28,14 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="font-serif text-2xl font-bold text-primary tracking-wider">
-              AFRO ESSENCE
+            <Link href="/" className="font-serif text-2xl font-bold text-primary tracking-wider flex items-center gap-2">
+              {settings?.logo_url ? (
+                <div className="relative h-10 w-32 sm:w-40">
+                  <Image src={settings.logo_url} alt="Afro Essence Logo" fill className="object-contain object-left" />
+                </div>
+              ) : (
+                "AFRO ESSENCE"
+              )}
             </Link>
           </div>
 

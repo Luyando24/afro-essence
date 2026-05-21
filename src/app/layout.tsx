@@ -7,6 +7,7 @@ import { CartProvider } from "@/components/CartContext";
 import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from "@/components/AuthContext";
 import { CurrencyProvider } from "@/components/CurrencyContext";
+import { StoreSettingsProvider } from "@/components/StoreSettingsContext";
 
 export const metadata: Metadata = {
   title: "Afro-Essence | Premium Hair Extensions",
@@ -24,19 +25,21 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`antialiased font-sans min-h-screen flex flex-col`}
       >
-        <AuthProvider>
-          <CurrencyProvider>
-            <CartProvider>
-              <Navbar />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-              <ChatWidget />
-              <CartDrawer />
-            </CartProvider>
-          </CurrencyProvider>
-        </AuthProvider>
+        <StoreSettingsProvider>
+          <AuthProvider>
+            <CurrencyProvider>
+              <CartProvider>
+                <Navbar />
+                <main className="flex-grow">
+                  {children}
+                </main>
+                <Footer />
+                <ChatWidget />
+                <CartDrawer />
+              </CartProvider>
+            </CurrencyProvider>
+          </AuthProvider>
+        </StoreSettingsProvider>
       </body>
     </html>
   );

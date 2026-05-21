@@ -4,22 +4,12 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Facebook, Instagram, Twitter, Mail, MapPin, Phone } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { useStoreSettings } from "./StoreSettingsContext";
+import Image from "next/image";
 
 export default function Footer() {
   const pathname = usePathname();
-  const [settings, setSettings] = useState<any>(null);
-
-  useEffect(() => {
-    supabase
-      .from("store_settings")
-      .select("*")
-      .eq("id", 1)
-      .single()
-      .then(({ data }) => {
-        if (data) setSettings(data);
-      });
-  }, []);
+  const { settings } = useStoreSettings();
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -30,7 +20,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Info */}
           <div className="space-y-4">
-            <h3 className="font-serif text-2xl font-bold text-primary">AFRO ESSENCE</h3>
+            {settings?.logo_url ? (
+              <div className="relative h-12 w-48 mb-4">
+                <Image src={settings.logo_url} alt="Afro Essence Logo" fill className="object-contain object-left" />
+              </div>
+            ) : (
+              <h3 className="font-serif text-2xl font-bold text-primary">AFRO ESSENCE</h3>
+            )}
             <p className="text-gray-300 text-sm leading-relaxed">
               Premium hair extensions designed to celebrate and enhance your natural beauty. 
               Ethically sourced and crafted with perfection.
