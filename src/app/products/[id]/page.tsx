@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Star, Truck, ShieldCheck, ArrowLeft, Heart, Share2, Loader2, MessageSquare, Plus, Minus, Check } from "lucide-react";
 import { useCart } from "@/components/CartContext";
 import { supabase } from "@/lib/supabase";
+import { useCurrency } from "@/components/CurrencyContext";
 import { products as fallbackProducts } from "@/data/products";
 
 interface Product {
@@ -34,6 +35,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const { id } = useParams() as { id: string };
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -302,7 +304,7 @@ export default function ProductDetailPage() {
             
             <div className="mt-4 flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-4">
               <p className="text-3xl text-primary font-bold tracking-tight">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </p>
               
               <div className="flex items-center space-x-3">
@@ -599,7 +601,7 @@ export default function ProductDetailPage() {
                       <h3 className="font-serif text-base font-bold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors truncate">
                         {p.name}
                       </h3>
-                      <p className="text-primary font-bold">${p.price.toFixed(2)}</p>
+                      <p className="text-primary font-bold">{formatPrice(p.price)}</p>
                     </div>
                   </div>
                 </Link>

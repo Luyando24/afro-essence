@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "./CartContext";
+import { useCurrency } from "./CurrencyContext";
 
 export default function CartDrawer() {
   const {
@@ -16,6 +17,7 @@ export default function CartDrawer() {
     cartTotal,
     cartCount,
   } = useCart();
+  const { formatPrice } = useCurrency();
   
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -125,7 +127,7 @@ export default function CartDrawer() {
                         {item.name}
                       </h4>
                       <p className="text-sm font-semibold text-primary">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                     
@@ -171,10 +173,10 @@ export default function CartDrawer() {
             <div className="px-6 py-6 bg-gray-50 dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-800 space-y-4">
               <div className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
                 <span>Subtotal</span>
-                <span className="font-semibold">${cartTotal.toFixed(2)}</span>
+                <span className="font-semibold">{formatPrice(cartTotal)}</span>
               </div>
               <p className="text-xs text-gray-500">
-                Shipping and taxes calculated at checkout. Enjoy free shipping on orders over $200!
+                Shipping and taxes calculated at checkout. Enjoy free shipping on orders over {formatPrice(200)}!
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-2">

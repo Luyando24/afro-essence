@@ -33,10 +33,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { useCurrency } from "@/components/CurrencyContext";
 
 export default function AdminDashboardPage() {
   const router = useRouter();
   const { user, signOut, loading: authLoading } = useAuth();
+  const { formatPrice } = useCurrency();
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "reviews" | "settings">("overview");
@@ -520,7 +522,7 @@ export default function AdminDashboardPage() {
                   <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between">
                     <div className="space-y-1.5">
                       <span className="text-xs text-gray-400 font-bold uppercase tracking-wider block">Total Revenue</span>
-                      <span className="text-3xl font-bold text-gray-900">${totalRevenue.toFixed(2)}</span>
+                      <span className="text-3xl font-bold text-gray-900">{formatPrice(totalRevenue)}</span>
                     </div>
                     <div className="h-12 w-12 bg-green-50 rounded-full flex items-center justify-center text-green-500">
                       <TrendingUp className="h-6 w-6" />
@@ -602,7 +604,7 @@ export default function AdminDashboardPage() {
                                 <td className="px-6 py-4 font-mono text-xs text-gray-500 select-all">{o.id.substring(0, 8)}...</td>
                                 <td className="px-6 py-4 font-bold text-gray-800">{o.first_name} {o.last_name}</td>
                                 <td className="px-6 py-4 text-gray-500">{new Date(o.created_at).toLocaleDateString()}</td>
-                                <td className="px-6 py-4 font-bold text-primary">${Number(o.total_amount).toFixed(2)}</td>
+                                <td className="px-6 py-4 font-bold text-primary">{formatPrice(Number(o.total_amount))}</td>
                                 <td className="px-6 py-4">
                                   <span className={`inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
                                     o.status === "Shipped" ? "bg-green-50 text-green-700 border border-green-200" :
@@ -639,7 +641,7 @@ export default function AdminDashboardPage() {
                             </div>
                             <div className="flex justify-between items-center text-[10px] text-gray-500">
                               <span>{new Date(o.created_at).toLocaleDateString()}</span>
-                              <span className="font-bold text-primary">${Number(o.total_amount).toFixed(2)}</span>
+                              <span className="font-bold text-primary">{formatPrice(Number(o.total_amount))}</span>
                             </div>
                           </div>
                         ))}
@@ -745,7 +747,7 @@ export default function AdminDashboardPage() {
                             <td className="px-6 py-4 text-gray-500 font-medium">{p.category}</td>
 
                             {/* Price */}
-                            <td className="px-6 py-4 font-bold text-gray-900">${Number(p.price).toFixed(2)}</td>
+                            <td className="px-6 py-4 font-bold text-gray-900">{formatPrice(Number(p.price))}</td>
 
                             {/* Live Inventory (Editable inline) */}
                             <td className="px-6 py-4">
@@ -837,7 +839,7 @@ export default function AdminDashboardPage() {
                       <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded border border-gray-100">
                         <div>
                           <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block">Price</span>
-                          <span className="text-xs font-bold text-gray-950">${Number(p.price).toFixed(2)}</span>
+                          <span className="text-xs font-bold text-gray-950">{formatPrice(Number(p.price))}</span>
                         </div>
                         
                         <div>
@@ -987,7 +989,7 @@ export default function AdminDashboardPage() {
                                 <td className="px-6 py-4 text-gray-500">{new Date(o.created_at).toLocaleString()}</td>
 
                                 {/* Total Amount */}
-                                <td className="px-6 py-4 font-bold text-primary">${Number(o.total_amount).toFixed(2)}</td>
+                                <td className="px-6 py-4 font-bold text-primary">{formatPrice(Number(o.total_amount))}</td>
 
                                 {/* Status Modifiable Dropdown */}
                                 <td className="px-6 py-4">
@@ -1050,7 +1052,7 @@ export default function AdminDashboardPage() {
                                                 </div>
                                               </div>
                                               <div className="text-right">
-                                                <p className="font-bold text-gray-900">${Number(item.price).toFixed(2)}</p>
+                                                <p className="font-bold text-gray-900">{formatPrice(Number(item.price))}</p>
                                                 <p className="text-[10px] text-gray-450">Quantity: {item.quantity}</p>
                                               </div>
                                             </div>
@@ -1119,7 +1121,7 @@ export default function AdminDashboardPage() {
                           </div>
                           <div className="text-right">
                             <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block">Total Amount</span>
-                            <span className="font-bold text-primary">${Number(o.total_amount).toFixed(2)}</span>
+                            <span className="font-bold text-primary">{formatPrice(Number(o.total_amount))}</span>
                           </div>
                         </div>
 
@@ -1162,7 +1164,7 @@ export default function AdminDashboardPage() {
                                     </div>
                                   </div>
                                   <div className="text-right font-bold text-gray-950">
-                                    ${Number(item.price * item.quantity).toFixed(2)}
+                                    {formatPrice(Number(item.price * item.quantity))}
                                   </div>
                                 </div>
                               ))}

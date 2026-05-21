@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Star, Loader2, SlidersHorizontal } from "lucide-react";
 import { products as fallbackProducts } from "@/data/products";
 import { supabase } from "@/lib/supabase";
+import { useCurrency } from "@/components/CurrencyContext";
 
 interface DBProduct {
   id: string;
@@ -24,6 +25,7 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortBy, setSortBy] = useState("Featured");
+  const { formatPrice } = useCurrency();
 
   useEffect(() => {
     async function loadProducts() {
@@ -168,7 +170,7 @@ export default function ShopPage() {
                     </h3>
                     <div className="mt-auto flex justify-between items-center pt-3 border-t border-gray-50 dark:border-zinc-800">
                       <span className="text-gray-950 dark:text-gray-50 font-bold text-lg">
-                        ${product.price.toFixed(2)}
+                        {formatPrice(product.price)}
                       </span>
                       <div className="flex items-center text-yellow-500 text-sm">
                         <Star className="h-4 w-4 fill-current text-yellow-400" />

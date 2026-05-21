@@ -6,12 +6,14 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ShoppingBag, Search, User as UserIcon } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useAuth } from "./AuthContext";
+import { useCurrency, Currency } from "./CurrencyContext";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const { cartCount, setIsCartOpen } = useCart();
   const { user, signOut } = useAuth();
+  const { currency, setCurrency } = useCurrency();
 
   if (pathname?.startsWith("/admin")) {
     return null;
@@ -46,6 +48,16 @@ export default function Navbar() {
 
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-5">
+            {/* Currency Switcher */}
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              className="bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300 outline-none cursor-pointer hover:text-primary transition-colors border-none"
+            >
+              <option value="NGN">NGN ₦</option>
+              <option value="AUD">AUD $</option>
+            </select>
+
             <button className="text-gray-900 dark:text-gray-100 hover:text-primary transition-colors">
               <Search className="h-6 w-6" />
             </button>
@@ -87,6 +99,16 @@ export default function Navbar() {
 
           {/* Mobile menu and cart button */}
           <div className="md:hidden flex items-center space-x-4">
+            {/* Mobile Currency Switcher */}
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as Currency)}
+              className="bg-transparent text-sm font-semibold text-gray-700 dark:text-gray-300 outline-none cursor-pointer border-none"
+            >
+              <option value="NGN">NGN ₦</option>
+              <option value="AUD">AUD $</option>
+            </select>
+
             <button 
               onClick={() => setIsCartOpen(true)}
               className="text-gray-900 dark:text-gray-100 hover:text-primary transition-colors relative"

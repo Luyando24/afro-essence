@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, Package, MapPin, Phone, Mail, ShoppingBag, Loader2, ArrowRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { useCurrency } from "@/components/CurrencyContext";
 
 interface Order {
   id: string;
@@ -36,6 +37,7 @@ function SuccessReceiptContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
+  const { formatPrice } = useCurrency();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
@@ -223,10 +225,10 @@ function SuccessReceiptContent() {
                     
                     <div className="text-right">
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </p>
                       <p className="text-[10px] text-gray-400 mt-0.5">
-                        ${item.price.toFixed(2)} each
+                        {formatPrice(item.price)} each
                       </p>
                     </div>
                   </div>
@@ -248,7 +250,7 @@ function SuccessReceiptContent() {
             <div className="text-right space-y-1">
               <span className="text-xs text-gray-500 font-medium">Total Paid</span>
               <p className="text-2xl font-bold text-primary">
-                ${Number(order.total_amount).toFixed(2)}
+                {formatPrice(Number(order.total_amount))}
               </p>
             </div>
           </div>

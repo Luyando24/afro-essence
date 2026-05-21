@@ -8,11 +8,13 @@ import { ArrowLeft, CreditCard, Shield, Loader2, ShoppingBag, User as UserIcon }
 import { useCart } from "@/components/CartContext";
 import { useAuth } from "@/components/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { useCurrency } from "@/components/CurrencyContext";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
+  const { formatPrice } = useCurrency();
 
   // Form State
   const [email, setEmail] = useState("");
@@ -336,7 +338,7 @@ export default function CheckoutPage() {
                     <span>Weaving Your Order...</span>
                   </>
                 ) : (
-                  <span>Place Your Order (${totalAmount.toFixed(2)})</span>
+                  <span>Place Your Order ({formatPrice(totalAmount)})</span>
                 )}
               </button>
             </form>
@@ -370,7 +372,7 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                     <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatPrice(item.price * item.quantity)}
                     </p>
                   </div>
                 ))}
@@ -380,21 +382,21 @@ export default function CheckoutPage() {
               <div className="space-y-3.5 border-t border-gray-100 dark:border-zinc-800 pt-6">
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                   <span>Subtotal</span>
-                  <span className="font-semibold text-gray-800 dark:text-gray-200">${cartTotal.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">{formatPrice(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                   <span>Shipping</span>
                   <span className="font-semibold text-gray-800 dark:text-gray-200">
-                    {shippingCost === 0 ? "Free" : `$${shippingCost.toFixed(2)}`}
+                    {shippingCost === 0 ? "Free" : formatPrice(shippingCost)}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
                   <span>Est. Sales Tax (8%)</span>
-                  <span className="font-semibold text-gray-800 dark:text-gray-200">${taxCost.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-800 dark:text-gray-200">{formatPrice(taxCost)}</span>
                 </div>
                 <div className="flex justify-between text-base font-bold text-gray-900 dark:text-white border-t border-gray-100 dark:border-zinc-800 pt-4">
                   <span>Total Due</span>
-                  <span className="text-primary">${totalAmount.toFixed(2)}</span>
+                  <span className="text-primary">{formatPrice(totalAmount)}</span>
                 </div>
               </div>
             </div>

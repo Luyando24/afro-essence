@@ -3,6 +3,7 @@ import Link from "next/link";
 import { products as fallbackProducts } from "@/data/products";
 import { ArrowRight, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import PriceDisplay from "@/components/PriceDisplay";
 
 export default async function Home() {
   // Fetch products from Supabase
@@ -148,9 +149,7 @@ export default async function Home() {
                       {product.name}
                     </h3>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-900 dark:text-gray-100 font-semibold">
-                        ${product.price}
-                      </span>
+                      <PriceDisplay amount={product.price} className="text-gray-900 dark:text-gray-100 font-semibold" />
                       <div className="flex items-center text-yellow-500 text-sm">
                         <Star className="h-4 w-4 fill-current" />
                         <span className="ml-1 text-gray-500 dark:text-gray-400">{product.rating}</span>
