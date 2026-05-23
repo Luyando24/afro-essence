@@ -339,7 +339,7 @@ export default function ProductDetailPage() {
                   <Star
                     key={rating}
                     className={`h-5 w-5 flex-shrink-0 ${
-                      displayRating > rating ? 'text-yellow-400 fill-current' : 'text-gray-300 dark:text-zinc-700'
+                      displayRating > rating ? 'text-[#D4AF37] fill-current' : 'text-gray-300 dark:text-zinc-700'
                     }`}
                     aria-hidden="true"
                   />
@@ -463,7 +463,7 @@ export default function ProductDetailPage() {
                   Customer Stories
                 </h2>
                 <div className="flex items-center space-x-2">
-                  <div className="flex items-center text-yellow-400">
+                  <div className="flex items-center text-[#D4AF37]">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
@@ -499,7 +499,7 @@ export default function ProductDetailPage() {
                           key={star}
                           type="button"
                           onClick={() => setReviewRating(star)}
-                          className="text-yellow-400 focus:outline-none hover:scale-110 transition-transform"
+                          className="text-[#D4AF37] focus:outline-none hover:scale-110 transition-transform"
                         >
                           <Star
                             className={`h-6 w-6 ${reviewRating >= star ? 'fill-current' : 'text-gray-300 dark:text-zinc-700'}`}
@@ -572,7 +572,7 @@ export default function ProductDetailPage() {
                           })}
                         </span>
                       </div>
-                      <div className="flex text-yellow-400">
+                      <div className="flex text-[#D4AF37]">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}

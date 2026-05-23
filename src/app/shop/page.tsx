@@ -172,8 +172,8 @@ export default function ShopPage() {
                       <span className="text-gray-950 dark:text-gray-50 font-bold text-lg">
                         {formatPrice(product.price)}
                       </span>
-                      <div className="flex items-center text-yellow-500 text-sm">
-                        <Star className="h-4 w-4 fill-current text-yellow-400" />
+                      <div className="flex items-center text-[#D4AF37] text-sm">
+                        <Star className="h-4 w-4 fill-current text-[#D4AF37]" />
                         <span className="ml-1 text-gray-600 dark:text-gray-400 font-medium">
                           {product.rating ? product.rating.toFixed(1) : "5.0"}
                         </span>

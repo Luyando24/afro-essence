@@ -1269,7 +1269,7 @@ export default function AdminDashboardPage() {
                           </div>
                           
                           {/* Stars */}
-                          <div className="flex text-yellow-400">
+                          <div className="flex text-[#D4AF37]">
                             {[...Array(5)].map((_, i) => (
                               <span key={i} className="text-xs">
                                 {r.rating > i ? "★" : "☆"}

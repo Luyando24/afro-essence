@@ -27,44 +27,47 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-secondary text-white py-20 lg:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-black/40 z-0" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="lg:w-1/2 space-y-8">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight">
-              Embrace Your <span className="text-primary">Natural Essence</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-200 max-w-2xl">
-              Discover premium hair extensions designed to celebrate the beauty of Afro-textured hair. 
-              Classy, sophisticated, and authentically you.
-            </p>
-            <div className="flex flex-wrap gap-4">
+      <section className="relative text-white overflow-hidden" style={{ minHeight: "100dvh" }}>
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          width={1920}
+          height={1080}
+          className="absolute inset-0 w-full h-full z-0"
+          style={{
+            objectFit: "cover",
+            objectPosition: "center center",
+            imageRendering: "auto",
+          }}
+        >
+          <source src="/hero_video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark gradient overlay for legibility */}
+        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.65) 100%)" }} />
+
+        {/* Content */}
+        <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8" style={{ minHeight: "100dvh" }}>
+          <div className="max-w-3xl space-y-8">
+            <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 href="/shop"
-                className="bg-primary text-white px-8 py-3 rounded-md font-medium hover:bg-white hover:text-primary transition-colors duration-300 inline-flex items-center"
+                className="bg-primary text-white px-10 py-3.5 rounded-md font-semibold hover:bg-white hover:text-primary transition-colors duration-300 inline-flex items-center shadow-lg"
               >
                 Shop Now <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
               <Link
                 href="/about"
-                className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-md font-medium hover:bg-white hover:text-secondary transition-colors duration-300"
+                className="bg-transparent border-2 border-white text-white px-10 py-3.5 rounded-md font-semibold hover:bg-white hover:text-secondary transition-colors duration-300 shadow-lg"
               >
                 Our Story
               </Link>
             </div>
           </div>
-        </div>
-        
-        {/* Decorative Image/Element (Optional) */}
-        <div className="hidden lg:block absolute right-0 top-0 bottom-0 w-1/2">
-           {/* Placeholder for Hero Image - using a product image for now if no specific hero asset */}
-           <Image
-             src={activeProducts[0]?.image || fallbackProducts[0].image}
-             alt="Model with beautiful hair"
-             fill
-             className="object-cover"
-             priority
-           />
         </div>
       </section>
 
@@ -150,7 +153,7 @@ export default async function Home() {
                     </h3>
                     <div className="flex justify-between items-center">
                       <PriceDisplay amount={product.price} className="text-gray-900 dark:text-gray-100 font-semibold" />
-                      <div className="flex items-center text-yellow-500 text-sm">
+                      <div className="flex items-center text-[#D4AF37] text-sm">
                         <Star className="h-4 w-4 fill-current" />
                         <span className="ml-1 text-gray-500 dark:text-gray-400">{product.rating}</span>
                       </div>

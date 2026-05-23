@@ -9,7 +9,7 @@ export default function ChatWidget() {
   if (pathname?.startsWith("/admin")) {
     return null;
   }
-  const whatsappNumber = "8615110335070";
+  const whatsappNumber = "8619564142774";
   const whatsappUrl = `https://wa.me/${whatsappNumber}`;
 
   return (
