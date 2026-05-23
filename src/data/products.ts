@@ -7,6 +7,9 @@ export interface Product {
   category: string;
   rating: number;
   reviews: number;
+  is_wholesale?: boolean;
+  moq_price?: number;
+  moq_quantity?: number;
 }
 
 export const products: Product[] = [
@@ -19,6 +22,9 @@ export const products: Product[] = [
     category: 'Bundles',
     rating: 5,
     reviews: 124,
+    is_wholesale: true,
+    moq_price: 89.99,
+    moq_quantity: 10,
   },
   {
     id: '2',
@@ -99,6 +105,9 @@ export const products: Product[] = [
     category: 'Wigs',
     rating: 4.9,
     reviews: 134,
+    is_wholesale: true,
+    moq_price: 189.99,
+    moq_quantity: 5,
   },
   {
     id: '10',
@@ -119,6 +128,9 @@ export const products: Product[] = [
     category: 'Tape-ins',
     rating: 4.5,
     reviews: 34,
+    is_wholesale: true,
+    moq_price: 119.99,
+    moq_quantity: 15,
   },
   {
     id: '12',
@@ -129,5 +141,8 @@ export const products: Product[] = [
     category: 'Bundles',
     rating: 4.8,
     reviews: 112,
+    is_wholesale: true,
+    moq_price: 99.99,
+    moq_quantity: 10,
   },
 ];

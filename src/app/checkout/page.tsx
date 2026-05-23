@@ -9,12 +9,23 @@ import { useCart } from "@/components/CartContext";
 import { useAuth } from "@/components/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { useCurrency } from "@/components/CurrencyContext";
+import { useStoreSettings } from "@/components/StoreSettingsContext";
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const { formatPrice } = useCurrency();
+  const { settings } = useStoreSettings();
+
+  const globalWholesaleMoq = settings?.global_wholesale_moq ?? 10;
+  
+  const hasWholesaleItems = cartItems.some(item => item.isWholesale);
+  const totalWholesaleQuantity = cartItems
+    .filter(item => item.isWholesale)
+    .reduce((sum, item) => sum + item.quantity, 0);
+
+  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleQuantity >= globalWholesaleMoq;
 
   // Form State
   const [email, setEmail] = useState("");
@@ -47,6 +58,11 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (cartItems.length === 0) {
       setErrorMessage("Your cart is empty. Please add some products before checking out.");
+      return;
+    }
+
+    if (!isWholesaleMoqValid) {
+      setErrorMessage(`Wholesale MOQ Not Met: You must purchase a minimum of ${globalWholesaleMoq} wholesale units in total to check out. You currently have ${totalWholesaleQuantity} units.`);
       return;
     }
 
@@ -198,6 +214,12 @@ export default function CheckoutPage() {
           </div>
         )}
 
+        {!isWholesaleMoqValid && (
+          <div className="mb-8 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-sm font-semibold rounded-md flex items-center gap-2">
+            <span>⚠️ Wholesale Requirement: Your cart must contain at least {globalWholesaleMoq} wholesale units in total to place a wholesale order. You currently have {totalWholesaleQuantity} wholesale units in your cart. Please add more wholesale items or increase their quantities to check out.</span>
+          </div>
+        )}
+
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 xl:gap-x-16">
           
           {/* Shipping Form Column (7 cols) */}
@@ -329,8 +351,8 @@ export default function CheckoutPage() {
               {/* Submit Action */}
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary text-white py-4 rounded-md font-bold text-center hover:bg-secondary hover:shadow-lg transition-all duration-300 shadow-md flex items-center justify-center space-x-2"
+                disabled={isSubmitting || !isWholesaleMoqValid}
+                className="w-full bg-primary text-white py-4 rounded-md font-bold text-center hover:bg-secondary hover:shadow-lg transition-all duration-300 shadow-md flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <>

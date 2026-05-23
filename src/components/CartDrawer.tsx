@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "./CartContext";
 import { useCurrency } from "./CurrencyContext";
+import { useStoreSettings } from "./StoreSettingsContext";
 
 export default function CartDrawer() {
   const {
@@ -18,6 +19,15 @@ export default function CartDrawer() {
     cartCount,
   } = useCart();
   const { formatPrice } = useCurrency();
+  const { settings } = useStoreSettings();
+
+  const globalWholesaleMoq = settings?.global_wholesale_moq ?? 10;
+  const hasWholesaleItems = cartItems.some(item => item.isWholesale);
+  const totalWholesaleQuantity = cartItems
+    .filter(item => item.isWholesale)
+    .reduce((sum, item) => sum + item.quantity, 0);
+
+  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleQuantity >= globalWholesaleMoq;
   
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -189,14 +199,29 @@ export default function CartDrawer() {
                 Shipping and taxes calculated at checkout.
               </p>
 
+              {!isWholesaleMoqValid && (
+                <p className="text-[11px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/30 p-2.5 rounded font-bold leading-normal">
+                  ⚠️ Wholesale MOQ Not Met: You must purchase a minimum of {globalWholesaleMoq} wholesale units in total to check out. You have {totalWholesaleQuantity} units.
+                </p>
+              )}
+ 
               <div className="grid grid-cols-1 gap-2 pt-2">
-                <Link
-                  href="/checkout"
-                  onClick={() => setIsCartOpen(false)}
-                  className="w-full bg-primary text-white py-3 rounded-md font-bold text-center hover:bg-secondary transition-colors duration-300 shadow-md"
-                >
-                  Proceed to Checkout
-                </Link>
+                {isWholesaleMoqValid ? (
+                  <Link
+                    href="/checkout"
+                    onClick={() => setIsCartOpen(false)}
+                    className="w-full bg-primary text-white py-3 rounded-md font-bold text-center hover:bg-secondary transition-colors duration-300 shadow-md block"
+                  >
+                    Proceed to Checkout
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full bg-gray-300 dark:bg-zinc-800 text-gray-500 dark:text-zinc-500 py-3 rounded-md font-bold text-center cursor-not-allowed opacity-60"
+                  >
+                    Proceed to Checkout
+                  </button>
+                )}
                 <button
                   onClick={() => setIsCartOpen(false)}
                   className="w-full bg-transparent border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-300 py-3 rounded-md font-medium text-center hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"

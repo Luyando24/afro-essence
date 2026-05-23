@@ -14,6 +14,7 @@ export interface StoreSettings {
   logo_url?: string;
   aud_rate?: number;
   ngn_rate?: number;
+  global_wholesale_moq?: number;
 }
 
 interface StoreSettingsContextType {

@@ -347,6 +347,7 @@ export default function AdminDashboardPage() {
 
       const parsedAudRate = parseFloat(storeSettings.aud_rate) || 1.5;
       const parsedNgnRate = parseFloat(storeSettings.ngn_rate) || 1500.0;
+      const parsedGlobalMoq = parseInt(storeSettings.global_wholesale_moq) || 10;
 
       const { error: settingsError } = await supabase
         .from("store_settings")
@@ -355,6 +356,7 @@ export default function AdminDashboardPage() {
           logo_url: finalLogoUrl, 
           aud_rate: parsedAudRate,
           ngn_rate: parsedNgnRate,
+          global_wholesale_moq: parsedGlobalMoq,
           id: 1, 
           updated_at: new Date().toISOString() 
         });
@@ -364,7 +366,8 @@ export default function AdminDashboardPage() {
         ...prev, 
         logo_url: finalLogoUrl,
         aud_rate: parsedAudRate,
-        ngn_rate: parsedNgnRate
+        ngn_rate: parsedNgnRate,
+        global_wholesale_moq: parsedGlobalMoq
       }));
       setLogoFile(null); // Clear file after upload
       alert("Store settings updated successfully!");
@@ -1606,6 +1609,28 @@ export default function AdminDashboardPage() {
                             />
                             <span className="block text-[10px] text-gray-400 mt-1">
                               Current static rate is 1500. Sets how many Nigerian Naira equal 1 US Dollar.
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="pt-6 border-t border-gray-100">
+                        <h4 className="font-serif text-base font-bold text-gray-900 mb-4">Wholesale Cart Requirements</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                              Global Wholesale MOQ (Units)
+                            </label>
+                            <input
+                              type="number"
+                              min="1"
+                              value={storeSettings.global_wholesale_moq ?? ""}
+                              onChange={(e) => setStoreSettings({...storeSettings, global_wholesale_moq: e.target.value})}
+                              className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary text-gray-950"
+                              placeholder="e.g. 10"
+                              required
+                            />
+                            <span className="block text-[10px] text-gray-400 mt-1">
+                              Sets the minimum number of total wholesale items a customer must have in their cart to checkout.
                             </span>
                           </div>
                         </div>
