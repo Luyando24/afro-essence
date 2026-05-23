@@ -8,6 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from "@/components/AuthContext";
 import { CurrencyProvider } from "@/components/CurrencyContext";
 import { StoreSettingsProvider } from "@/components/StoreSettingsContext";
+import NewsletterPopup from "@/components/NewsletterPopup";
 
 export const metadata: Metadata = {
   title: "Afro-Essence | Premium Hair Extensions",
@@ -36,6 +37,7 @@ export default function RootLayout({
                 <Footer />
                 <ChatWidget />
                 <CartDrawer />
+                <NewsletterPopup />
               </CartProvider>
             </CurrencyProvider>
           </AuthProvider>
