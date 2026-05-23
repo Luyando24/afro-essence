@@ -7,7 +7,6 @@ const fallbackItems = [
   { label: "HD Lace Wigs", icon: "✦" },
   { label: "Clip-In Extensions", icon: "✦" },
   { label: "Afro Twist Braids", icon: "✦" },
-  { label: "Free Shipping $200+", icon: "✦" },
   { label: "Ethically Sourced", icon: "✦" },
   { label: "30-Day Returns", icon: "✦" },
   { label: "Premium Quality", icon: "✦" },

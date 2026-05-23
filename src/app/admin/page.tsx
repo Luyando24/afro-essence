@@ -1679,7 +1679,7 @@ export default function AdminDashboardPage() {
                         </label>
                         <input
                           type="text"
-                          placeholder="e.g. Free Shipping $200+"
+                          placeholder="e.g. 100% Kanekalon"
                           value={newMarqueeLabel}
                           onChange={(e) => setNewMarqueeLabel(e.target.value)}
                           className="w-full text-sm border border-gray-300 rounded p-2.5 outline-none focus:ring-1 focus:ring-primary text-gray-950"

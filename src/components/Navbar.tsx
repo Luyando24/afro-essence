@@ -30,7 +30,7 @@ export default function Navbar() {
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="font-serif text-2xl font-bold text-primary tracking-wider flex items-center gap-2">
               {settings?.logo_url ? (
-                <div className="relative h-10 w-32 sm:w-40">
+                <div className="relative h-14 w-44 sm:w-56">
                   <Image src={settings.logo_url} alt="Afro Essence Logo" fill className="object-contain object-left" />
                 </div>
               ) : (

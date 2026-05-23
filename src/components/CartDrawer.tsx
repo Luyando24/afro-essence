@@ -186,7 +186,7 @@ export default function CartDrawer() {
                 <span className="font-semibold">{formatPrice(cartTotal)}</span>
               </div>
               <p className="text-xs text-gray-500">
-                Shipping and taxes calculated at checkout. Enjoy free shipping on orders over {formatPrice(200)}!
+                Shipping and taxes calculated at checkout.
               </p>
 
               <div className="grid grid-cols-1 gap-2 pt-2">

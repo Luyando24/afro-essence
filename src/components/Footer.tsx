@@ -21,7 +21,7 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="space-y-4">
             {settings?.logo_url ? (
-              <div className="relative h-12 w-48 mb-4">
+              <div className="relative h-16 w-60 mb-4">
                 <Image src={settings.logo_url} alt="Afro Essence Logo" fill className="object-contain object-left" />
               </div>
             ) : (

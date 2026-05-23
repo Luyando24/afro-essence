@@ -101,7 +101,6 @@ export default function WholesalePage() {
             </p>
             <div className="flex flex-wrap gap-4 pt-2 text-xs text-gray-400">
               <span className="flex items-center gap-1"><Info className="h-4 w-4 text-primary" /> Special MOQ wholesale pricing per unit</span>
-              <span className="flex items-center gap-1">✦ Free shipping on orders over $200</span>
             </div>
           </div>
         </div>

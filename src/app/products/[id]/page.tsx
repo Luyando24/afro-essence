@@ -476,7 +476,7 @@ export default function ProductDetailPage() {
             <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-zinc-800 pt-6 mt-auto">
               <div className="flex items-center">
                 <Truck className="h-5 w-5 mr-2 text-primary" />
-                <span>Free Shipping over $200</span>
+                <span>Fast Dispatch & Tracking</span>
               </div>
               <div className="flex items-center">
                 <ShieldCheck className="h-5 w-5 mr-2 text-primary" />
