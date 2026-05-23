@@ -55,6 +55,10 @@ export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [marqueeItems, setMarqueeItems] = useState<any[]>([]);
+  const [newMarqueeLabel, setNewMarqueeLabel] = useState("");
+  const [newMarqueeIcon, setNewMarqueeIcon] = useState("✦");
+  const [marqueeEditLabels, setMarqueeEditLabels] = useState<Record<string, string>>({});
   const [storeSettings, setStoreSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -140,6 +144,13 @@ export default function AdminDashboardPage() {
         .select("*")
         .order("subscribed_at", { ascending: false });
       setSubscribers(subData || []);
+
+      // 6. Fetch Marquee Items
+      const { data: marqueeData } = await supabase
+        .from("marquee_items")
+        .select("*")
+        .order("created_at");
+      setMarqueeItems(marqueeData || []);
 
     } catch (err: any) {
       console.error("Dashboard database fetch failed:", err);
@@ -362,6 +373,81 @@ export default function AdminDashboardPage() {
       alert("Failed to save settings: " + err.message);
     } finally {
       setSavingSettings(false);
+    }
+  };
+
+  // Marquee Action Handlers
+  const handleAddMarqueeItem = async () => {
+    if (!newMarqueeLabel.trim()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from("marquee_items")
+        .insert({
+          label: newMarqueeLabel.trim(),
+          icon: newMarqueeIcon
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setMarqueeItems(prev => [...prev, data]);
+        setNewMarqueeLabel("");
+        alert("New marquee ticker item added successfully!");
+      }
+    } catch (err: any) {
+      console.error("Failed to add marquee item:", err);
+      alert("Failed to add item: " + err.message);
+    }
+  };
+
+  const handleUpdateMarqueeItem = async (itemId: string) => {
+    const updatedLabel = marqueeEditLabels[itemId];
+    if (updatedLabel === undefined || !updatedLabel.trim()) return;
+
+    try {
+      const { error } = await supabase
+        .from("marquee_items")
+        .update({ label: updatedLabel.trim() })
+        .eq("id", itemId);
+
+      if (error) throw error;
+
+      setMarqueeItems(prev =>
+        prev.map(item => item.id === itemId ? { ...item, label: updatedLabel.trim() } : item)
+      );
+
+      // Clear edit buffer state for this item
+      setMarqueeEditLabels(prev => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
+
+      alert("Marquee ticker item updated successfully!");
+    } catch (err: any) {
+      console.error("Failed to update marquee item:", err);
+      alert("Failed to update item: " + err.message);
+    }
+  };
+
+  const handleDeleteMarqueeItem = async (itemId: string) => {
+    if (!confirm("Are you sure you want to delete this marquee ticker item?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("marquee_items")
+        .delete()
+        .eq("id", itemId);
+
+      if (error) throw error;
+
+      setMarqueeItems(prev => prev.filter(item => item.id !== itemId));
+    } catch (err: any) {
+      console.error("Failed to delete marquee item:", err);
+      alert("Failed to delete item: " + err.message);
     }
   };
 
@@ -871,7 +957,14 @@ export default function AdminDashboardPage() {
                                   <Image src={p.image} alt={p.name} fill className="object-cover" />
                                 </div>
                                 <div>
-                                  <h4 className="font-bold text-sm text-gray-900 leading-tight">{p.name}</h4>
+                                  <h4 className="font-bold text-sm text-gray-900 leading-tight flex items-center gap-1.5">
+                                    {p.name}
+                                    {p.is_wholesale && (
+                                      <span className="bg-amber-150 text-amber-800 text-[9px] font-extrabold px-2 py-0.5 rounded border border-amber-200 uppercase tracking-wider">
+                                        Wholesale
+                                      </span>
+                                    )}
+                                  </h4>
                                   <span className="text-[10px] text-gray-400 font-mono select-all block mt-0.5">{p.id}</span>
                                 </div>
                               </div>
@@ -881,7 +974,14 @@ export default function AdminDashboardPage() {
                             <td className="px-6 py-4 text-gray-500 font-medium">{p.category}</td>
 
                             {/* Price */}
-                            <td className="px-6 py-4 font-bold text-gray-900">{formatPrice(Number(p.price))}</td>
+                            <td className="px-6 py-4 text-gray-900 font-bold">
+                              <div>{formatPrice(Number(p.price))}</div>
+                              {p.is_wholesale && p.moq_price && (
+                                <div className="text-[10px] text-amber-600 font-semibold mt-0.5">
+                                  MOQ: {formatPrice(Number(p.moq_price))} (Min: {p.moq_quantity || 10})
+                                </div>
+                              )}
+                            </td>
 
                             {/* Live Inventory (Editable inline) */}
                             <td className="px-6 py-4">
@@ -962,9 +1062,16 @@ export default function AdminDashboardPage() {
                           <Image src={p.image} alt={p.name} fill className="object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <span className="text-[9px] uppercase tracking-wider bg-amber-50 text-primary border border-amber-100 px-2 py-0.5 rounded font-bold">
-                            {p.category}
-                          </span>
+                          <div className="flex flex-wrap gap-1.5 items-center">
+                            <span className="text-[9px] uppercase tracking-wider bg-amber-50 text-primary border border-amber-100 px-2 py-0.5 rounded font-bold">
+                              {p.category}
+                            </span>
+                            {p.is_wholesale && (
+                              <span className="text-[9px] uppercase tracking-wider bg-amber-105 text-amber-800 border border-amber-200 px-2 py-0.5 rounded font-bold">
+                                Wholesale
+                              </span>
+                            )}
+                          </div>
                           <h4 className="font-bold text-sm text-gray-900 leading-tight mt-1 truncate">{p.name}</h4>
                           <span className="text-[9px] text-gray-400 font-mono block truncate mt-0.5">{p.id}</span>
                         </div>
@@ -973,7 +1080,12 @@ export default function AdminDashboardPage() {
                       <div className="flex justify-between items-center bg-gray-50/50 p-2.5 rounded border border-gray-100">
                         <div>
                           <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider block">Price</span>
-                          <span className="text-xs font-bold text-gray-950">{formatPrice(Number(p.price))}</span>
+                          <span className="text-xs font-bold text-gray-950 block">{formatPrice(Number(p.price))}</span>
+                          {p.is_wholesale && p.moq_price && (
+                            <span className="text-[9px] text-amber-600 font-bold block mt-0.5">
+                              MOQ: {formatPrice(Number(p.moq_price))} (Min: {p.moq_quantity || 10})
+                            </span>
+                          )}
                         </div>
                         
                         <div>
@@ -1546,6 +1658,111 @@ export default function AdminDashboardPage() {
                   ) : (
                     <div className="text-sm text-gray-500">Settings not found. Fetching...</div>
                   )}
+                </div>
+
+                {/* Home Marquee Ticker Items Section */}
+                <div className="bg-white p-6 border border-gray-100 rounded-lg shadow-sm">
+                  <h3 className="font-serif text-lg font-bold text-gray-900 mb-2">Home Marquee Ticker Items</h3>
+                  <p className="text-xs text-gray-500 mb-6">
+                    Manage the moving announcements ticker displayed at the top of the storefront homepage.
+                  </p>
+
+                  {/* Add New Item */}
+                  <div className="bg-gray-50/60 p-5 border border-gray-150 rounded-xl mb-8 max-w-2xl">
+                    <span className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-3">
+                      Add Ticker Item
+                    </span>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <div className="flex-1">
+                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                          Label
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Free Shipping $200+"
+                          value={newMarqueeLabel}
+                          onChange={(e) => setNewMarqueeLabel(e.target.value)}
+                          className="w-full text-sm border border-gray-300 rounded p-2.5 outline-none focus:ring-1 focus:ring-primary text-gray-950"
+                        />
+                      </div>
+                      <div className="w-full sm:w-32">
+                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                          Icon
+                        </label>
+                        <select
+                          value={newMarqueeIcon}
+                          onChange={(e) => setNewMarqueeIcon(e.target.value)}
+                          className="w-full text-sm border border-gray-300 rounded p-2.5 outline-none focus:ring-1 focus:ring-primary text-gray-950 bg-white"
+                        >
+                          <option value="✦">✦ Star</option>
+                          <option value="❤">❤ Heart</option>
+                          <option value="⚡">⚡ Lightning</option>
+                          <option value="🔥">🔥 Fire</option>
+                          <option value="✨">✨ Sparkle</option>
+                          <option value="✓">✓ Check</option>
+                        </select>
+                      </div>
+                      <div className="flex items-end">
+                        <button
+                          type="button"
+                          onClick={handleAddMarqueeItem}
+                          className="w-full sm:w-auto bg-primary text-white px-5 py-2.5 rounded text-sm font-bold shadow-md hover:bg-secondary transition-colors shrink-0 flex items-center justify-center gap-1.5"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Add Item
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* List of current items */}
+                  <div className="space-y-3 max-w-2xl">
+                    <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Active Ticker Items ({marqueeItems.length})
+                    </label>
+                    {marqueeItems.length === 0 ? (
+                      <p className="text-sm text-gray-500 italic py-4">No marquee items found. Add some above.</p>
+                    ) : (
+                      marqueeItems.map((item) => {
+                        const hasChanges = marqueeEditLabels[item.id] !== undefined && marqueeEditLabels[item.id] !== item.label;
+                        const currentVal = marqueeEditLabels[item.id] !== undefined ? marqueeEditLabels[item.id] : item.label;
+                        
+                        return (
+                          <div key={item.id} className="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-200 shadow-xs hover:border-gray-300 transition-colors">
+                            <span className="text-primary text-lg font-bold w-8 text-center select-none bg-gray-50 h-8 rounded flex items-center justify-center border border-gray-150">
+                              {item.icon}
+                            </span>
+                            <input
+                              type="text"
+                              value={currentVal}
+                              onChange={(e) => setMarqueeEditLabels(prev => ({ ...prev, [item.id]: e.target.value }))}
+                              className="flex-1 bg-white text-sm border border-gray-200 focus:border-primary rounded px-3 py-2 outline-none focus:ring-1 focus:ring-primary text-gray-950 transition-all"
+                            />
+                            <div className="flex gap-2">
+                              {hasChanges && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpdateMarqueeItem(item.id)}
+                                  className="p-2.5 bg-green-50 text-green-600 border border-green-200 hover:bg-green-100 rounded transition-colors shadow-xs"
+                                  title="Save changes"
+                                >
+                                  <Save className="h-4 w-4" />
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteMarqueeItem(item.id)}
+                                className="p-2.5 bg-red-50 text-red-500 border border-red-100 hover:bg-red-100 rounded transition-colors shadow-xs"
+                                title="Delete item"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
               </div>
             )}

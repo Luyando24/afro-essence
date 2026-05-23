@@ -1,4 +1,6 @@
-const items = [
+import { supabase } from "@/lib/supabase";
+
+const fallbackItems = [
   { label: "Virgin Hair Extensions", icon: "✦" },
   { label: "4C Texture Match", icon: "✦" },
   { label: "Kinky Curly Bundles", icon: "✦" },
@@ -18,7 +20,22 @@ const items = [
   { label: "Scarfs", icon: "✦" },
 ];
 
-export default function MarqueeBanner() {
+export default async function MarqueeBanner() {
+  let items = fallbackItems;
+
+  try {
+    const { data, error } = await supabase
+      .from("marquee_items")
+      .select("label, icon")
+      .order("created_at", { ascending: true });
+
+    if (!error && data && data.length > 0) {
+      items = data;
+    }
+  } catch (err) {
+    console.error("Failed to fetch marquee items:", err);
+  }
+
   // Duplicate for seamless infinite loop
   const doubled = [...items, ...items];
 

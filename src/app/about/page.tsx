@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { products } from "@/data/products";
 
 export default function AboutPage() {
   return (
@@ -20,7 +19,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative aspect-[4/5] rounded-lg overflow-hidden">
                <Image
-                 src={products[1].image} // Using a product image as a placeholder for founder/brand image
+                 src="/story.png"
                  alt="Afro Essence Founder"
                  fill
                  className="object-cover"
@@ -39,7 +38,7 @@ export default function AboutPage() {
                 <ul className="space-y-4">
                   <li className="flex items-start">
                     <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3 mt-0.5">✓</span>
-                    <span className="text-gray-600 dark:text-gray-300">100% Ethically Sourced Virgin Human Hair</span>
+                    <span className="text-gray-600 dark:text-gray-300">100% Ethically Sourced Kanekalon</span>
                   </li>
                   <li className="flex items-start">
                     <span className="h-6 w-6 rounded-full bg-primary/20 text-primary flex items-center justify-center mr-3 mt-0.5">✓</span>

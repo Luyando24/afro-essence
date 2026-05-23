@@ -24,7 +24,12 @@ export default async function Home() {
   }
 
   const activeProducts = dbProducts !== null ? dbProducts : fallbackProducts;
-  const featuredProducts = activeProducts.slice(0, 4);
+  
+  // Separate retail products from wholesale products
+  const retailProducts = activeProducts.filter((p: any) => !p.is_wholesale);
+  const wholesaleProducts = activeProducts.filter((p: any) => p.is_wholesale).slice(0, 4);
+  
+  const featuredProducts = retailProducts.slice(0, 4);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -96,7 +101,7 @@ export default async function Home() {
                 <Star className="h-8 w-8" />
               </div>
               <h3 className="text-xl font-bold mb-2">Premium Quality</h3>
-              <p className="text-gray-600 dark:text-gray-400">100% Virgin Human Hair that lasts.</p>
+              <p className="text-gray-600 dark:text-gray-400">100% Kanekalon that lasts.</p>
             </div>
             <div className="p-6 bg-gray-50 dark:bg-zinc-800 rounded-lg">
               <div className="w-16 h-16 bg-primary/20 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
@@ -176,6 +181,66 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Wholesale Deals Section */}
+      {wholesaleProducts.length > 0 && (
+        <section className="py-20 bg-zinc-900 text-white border-t border-primary/20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <span className="text-primary font-bold text-xs uppercase tracking-widest block mb-1">Bulk Purchases</span>
+                <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
+                  Wholesale Opportunities
+                </h2>
+                <p className="text-gray-400 text-sm">Premium bundles and extensions at special MOQ prices.</p>
+              </div>
+              <Link href="/wholesale" className="hidden md:flex items-center text-primary font-medium hover:text-white transition-colors">
+                View Wholesale Catalog <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+              {wholesaleProducts.map((product) => {
+                const wholesalePrice = product.moq_price || product.price;
+                return (
+                  <Link href={`/products/${product.id}`} key={product.id} className="group">
+                    <div className="bg-zinc-800 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-305 border border-zinc-700 hover:border-primary/40 h-full flex flex-col">
+                      <div className="aspect-[4/5] relative overflow-hidden bg-zinc-750">
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        {/* MOQ Badge */}
+                        <div className="absolute top-3 left-3 bg-zinc-950/80 text-primary text-[9px] font-extrabold px-2 py-0.5 rounded border border-primary/20 uppercase tracking-wider animate-pulse">
+                          MOQ: {product.moq_quantity || 10} Units
+                        </div>
+                      </div>
+                      <div className="p-4 flex flex-col flex-grow">
+                        <p className="text-xs text-primary mb-1">{product.category}</p>
+                        <h3 className="font-serif text-base font-bold text-white mb-1 group-hover:text-primary transition-colors line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <div className="mt-auto pt-3 border-t border-zinc-700 flex justify-between items-baseline">
+                          <span className="text-xs text-gray-400">Wholesale Price:</span>
+                          <PriceDisplay amount={wholesalePrice} className="text-primary font-extrabold text-lg" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            <div className="mt-12 text-center md:hidden">
+              <Link href="/wholesale" className="inline-flex items-center text-primary font-medium hover:text-white transition-colors">
+                View Wholesale Catalog <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Newsletter / CTA Section */}
       <section className="py-20 bg-secondary text-white relative overflow-hidden">

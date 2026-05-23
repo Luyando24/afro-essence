@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Star, Truck, ShieldCheck, ArrowLeft, Heart, Share2, Loader2, MessageSquare, Plus, Minus, Check } from "lucide-react";
+import { Star, Truck, ShieldCheck, ArrowLeft, Heart, Share2, Loader2, MessageSquare, Plus, Minus, Check, Info } from "lucide-react";
 import { useCart } from "@/components/CartContext";
 import { supabase } from "@/lib/supabase";
 import { useCurrency } from "@/components/CurrencyContext";
@@ -21,6 +21,9 @@ interface Product {
   rating: number;
   reviews_count?: number;
   stock_quantity?: number;
+  is_wholesale?: boolean;
+  moq_price?: number;
+  moq_quantity?: number;
 }
 
 interface Review {
@@ -98,12 +101,18 @@ export default function ProductDetailPage() {
           currentProduct = {
             ...dbProduct,
             price: Number(dbProduct.price),
-            rating: Number(dbProduct.rating)
+            rating: Number(dbProduct.rating),
+            is_wholesale: dbProduct.is_wholesale || false,
+            moq_price: dbProduct.moq_price ? Number(dbProduct.moq_price) : undefined,
+            moq_quantity: dbProduct.moq_quantity ? Number(dbProduct.moq_quantity) : undefined
           };
         }
 
         setProduct(currentProduct);
         setSelectedImage(currentProduct.image);
+        if (currentProduct.is_wholesale && currentProduct.moq_quantity) {
+          setQuantity(currentProduct.moq_quantity);
+        }
 
         // 2. Fetch Product Reviews
         const { data: dbReviews } = await supabase
@@ -314,10 +323,28 @@ export default function ProductDetailPage() {
               {product.name}
             </h1>
             
-            <div className="mt-4 flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-4">
-              <p className="text-3xl text-primary font-bold tracking-tight">
-                {formatPrice(product.price)}
-              </p>
+             <div className="mt-4 flex items-center justify-between border-b border-gray-100 dark:border-zinc-800 pb-4">
+              <div>
+                {product.is_wholesale ? (
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl text-primary font-extrabold tracking-tight">
+                        {formatPrice(product.moq_price || product.price)}
+                      </span>
+                      <span className="text-xs bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 font-extrabold px-2.5 py-0.5 rounded border border-amber-200 dark:border-amber-900/30 uppercase tracking-widest">
+                        Wholesale Deal
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      Retail Price: <span className="line-through">{formatPrice(product.price)}</span> (Save {(100 - (((product.moq_price || product.price) / product.price) * 100)).toFixed(0)}%)
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-3xl text-primary font-bold tracking-tight">
+                    {formatPrice(product.price)}
+                  </p>
+                )}
+              </div>
               
               <div className="flex items-center space-x-3">
                  <button className="text-gray-400 hover:text-red-500 transition-colors p-2 bg-gray-50 dark:bg-zinc-900 rounded-full border border-gray-100 dark:border-zinc-800">
@@ -398,13 +425,20 @@ export default function ProductDetailPage() {
                  </div>
                </div>
 
-               {/* Quantity & Cart Button */}
-               <div className="flex items-center space-x-4 mb-8">
-                 {(product.stock_quantity ?? 0) > 0 ? (
-                   <>
-                     <div className="flex items-center border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 shadow-sm">
+                {product.is_wholesale && (
+                  <p className="text-xs text-amber-600 dark:text-amber-500 font-bold mb-4 flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/20 p-2.5 rounded border border-amber-200 dark:border-amber-900/30">
+                    <Info className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                    <span>Wholesale Item: Minimum Order Quantity (MOQ) of {product.moq_quantity || 10} units is required.</span>
+                  </p>
+                )}
+
+                {/* Quantity & Cart Button */}
+                <div className="flex items-center space-x-4 mb-8">
+                  {(product.stock_quantity ?? 0) > 0 ? (
+                    <>
+                      <div className="flex items-center border border-gray-300 dark:border-zinc-700 rounded-md bg-white dark:bg-zinc-800 shadow-sm">
                         <button 
-                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          onClick={() => setQuantity((q) => Math.max(product.is_wholesale ? (product.moq_quantity || 10) : 1, q - 1))}
                           className="px-4 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-700 font-bold transition-colors"
                         >
                           <Minus className="h-3.5 w-3.5" />
@@ -418,24 +452,24 @@ export default function ProductDetailPage() {
                         >
                           <Plus className="h-3.5 w-3.5" />
                         </button>
-                     </div>
-                     
-                     <button 
-                       onClick={() => addToCart(product, selectedLength, quantity)}
-                       className="flex-1 bg-primary border border-transparent rounded-md py-3.5 px-8 flex items-center justify-center text-base font-bold text-white hover:bg-secondary hover:shadow-lg transition-all duration-300 focus:outline-none"
-                     >
-                       Add to Cart
-                     </button>
-                   </>
-                 ) : (
-                   <button 
-                     disabled
-                     className="w-full bg-red-50 dark:bg-red-955 text-red-655 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-md py-3.5 px-8 flex items-center justify-center text-base font-bold cursor-not-allowed uppercase tracking-wider"
-                   >
-                     Sold Out
-                   </button>
-                 )}
-               </div>
+                      </div>
+                      
+                      <button 
+                        onClick={() => addToCart(product, selectedLength, quantity)}
+                        className="flex-1 bg-primary border border-transparent rounded-md py-3.5 px-8 flex items-center justify-center text-base font-bold text-white hover:bg-secondary hover:shadow-lg transition-all duration-300 focus:outline-none"
+                      >
+                        Add to Cart
+                      </button>
+                    </>
+                  ) : (
+                    <button 
+                      disabled
+                      className="w-full bg-red-50 dark:bg-red-955 text-red-655 dark:text-red-400 border border-red-200 dark:border-red-900/30 rounded-md py-3.5 px-8 flex items-center justify-center text-base font-bold cursor-not-allowed uppercase tracking-wider"
+                    >
+                      Sold Out
+                    </button>
+                  )}
+                </div>
             </div>
 
             {/* Guarantees */}

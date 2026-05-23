@@ -26,6 +26,9 @@ export default function AdminEditProductPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
   const [saving, setSaving] = useState(false);
+  const [isWholesale, setIsWholesale] = useState(false);
+  const [moqPrice, setMoqPrice] = useState("");
+  const [moqQuantity, setMoqQuantity] = useState("10");
 
   // File Upload States
   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
@@ -71,6 +74,9 @@ export default function AdminEditProductPage() {
         setDescription(data.description || "");
         setMainImagePreview(data.image || "");
         setExistingSecondaryImages(data.images || []);
+        setIsWholesale(data.is_wholesale || false);
+        setMoqPrice(data.moq_price ? String(data.moq_price) : "");
+        setMoqQuantity(data.moq_quantity !== undefined ? String(data.moq_quantity) : "10");
       } catch (err: any) {
         console.error("Failed to load product details:", err);
         setError(err.message || "Failed to load product details.");
@@ -148,6 +154,19 @@ export default function AdminEditProductPage() {
         throw new Error("Please enter a valid stock level.");
       }
 
+      let moqPriceVal = null;
+      let moqQtyVal = 10;
+      if (isWholesale) {
+        moqPriceVal = parseFloat(moqPrice);
+        moqQtyVal = parseInt(moqQuantity);
+        if (isNaN(moqPriceVal) || moqPriceVal <= 0) {
+          throw new Error("Please enter a valid wholesale MOQ price greater than 0.");
+        }
+        if (isNaN(moqQtyVal) || moqQtyVal < 1) {
+          throw new Error("Please enter a valid wholesale minimum order quantity (at least 1).");
+        }
+      }
+
       // 1. Re-upload main image if replaced
       let finalMainImageUrl = imageUrl;
       if (mainImageFile) {
@@ -173,7 +192,10 @@ export default function AdminEditProductPage() {
         stock_quantity: stockVal,
         image: finalMainImageUrl,
         images: combinedSecondaryUrls,
-        description: description.trim()
+        description: description.trim(),
+        is_wholesale: isWholesale,
+        moq_price: moqPriceVal,
+        moq_quantity: moqQtyVal
       };
 
       const { error: updateError } = await supabase
@@ -388,8 +410,64 @@ export default function AdminEditProductPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={4}
-                    className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 resize-none shadow-sm"
+                    className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-955 resize-none shadow-sm"
                   />
+                </div>
+
+                {/* Wholesale Specifications */}
+                <div className="md:col-span-2 bg-gray-50/50 p-6 border border-gray-200 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="block text-xs font-bold text-gray-955 uppercase tracking-wider mb-1">
+                        Wholesale Product Toggler
+                      </span>
+                      <span className="block text-[10px] text-gray-400">
+                        Enable this to mark the product as wholesale with Minimum Order Quantity specifications.
+                      </span>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isWholesale}
+                        onChange={(e) => setIsWholesale(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+
+                  {isWholesale && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-250/60 animate-in fade-in duration-300">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                          Wholesale MOQ Price ($ USD) *
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          required={isWholesale}
+                          value={moqPrice}
+                          onChange={(e) => setMoqPrice(e.target.value)}
+                          placeholder="89.99"
+                          className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-955 shadow-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                          Minimum Order Quantity (MOQ) *
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          required={isWholesale}
+                          value={moqQuantity}
+                          onChange={(e) => setMoqQuantity(e.target.value)}
+                          placeholder="10"
+                          className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-955 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
               </div>

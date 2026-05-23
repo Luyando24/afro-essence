@@ -15,7 +15,7 @@ export const products: Product[] = [
     name: 'Afro Kinky Curly Bundle',
     price: 129.99,
     image: '/products/O1CN01Da2lyL2G0zUST1Ofs_!!2221348218954-0-cib.jpg',
-    description: '100% Virgin Human Hair. Defined tight curls that mimic natural 4C hair texture. Perfect for a bold, natural look.',
+    description: '100% Kanekalon. Defined tight curls that mimic natural 4C hair texture. Perfect for a bold, natural look.',
     category: 'Bundles',
     rating: 5,
     reviews: 124,

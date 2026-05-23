@@ -123,16 +123,26 @@ export default function CartDrawer() {
                   {/* Info */}
                   <div className="flex-1 flex flex-col min-w-0">
                     <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-2">
+                      <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-2 flex items-center gap-1.5">
                         {item.name}
+                        {item.isWholesale && (
+                          <span className="bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 text-[8px] font-extrabold px-1.5 py-0.5 rounded border border-amber-250 dark:border-amber-900/30 uppercase tracking-wide">
+                            Wholesale
+                          </span>
+                        )}
                       </h4>
                       <p className="text-sm font-semibold text-primary">
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                     
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      Length: <span className="font-medium text-gray-800 dark:text-gray-200">{item.length}</span>
+                    <p className="text-xs text-gray-500 mt-0.5 flex flex-wrap gap-2">
+                      <span>Length: <span className="font-medium text-gray-800 dark:text-gray-200">{item.length}</span></span>
+                      {item.isWholesale && (
+                        <span className="text-[10px] text-amber-600 dark:text-amber-500 font-extrabold">
+                          (MOQ: {item.moqQuantity || 10})
+                        </span>
+                      )}
                     </p>
 
                     {/* Quantity Controls & Delete */}

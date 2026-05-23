@@ -96,16 +96,16 @@ export default function ContactPage() {
                    </p>
                  </details>
                  <details className="group bg-white dark:bg-zinc-900 rounded-lg p-4 shadow-sm cursor-pointer">
-                   <summary className="font-medium text-gray-900 dark:text-white list-none flex justify-between items-center">
-                     Can I dye the hair?
-                     <span className="transition group-open:rotate-180">
-                       <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
-                     </span>
-                   </summary>
-                   <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm">
-                     Yes! Our hair is 100% Virgin Human Hair and can be dyed, bleached, and heat styled.
-                   </p>
-                 </details>
+                    <summary className="font-medium text-gray-900 dark:text-white list-none flex justify-between items-center">
+                      Can I style or dye the hair?
+                      <span className="transition group-open:rotate-180">
+                        <svg fill="none" height="24" shapeRendering="geometricPrecision" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                      </span>
+                    </summary>
+                    <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm">
+                      Our hair is 100% Kanekalon. It is heat-resistant, so it can be heat styled (e.g., set in hot water), but we do not recommend dyeing or bleaching synthetic fibers.
+                    </p>
+                  </details>
                </div>
             </div>
           </div>

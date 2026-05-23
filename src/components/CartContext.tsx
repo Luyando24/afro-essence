@@ -11,11 +11,13 @@ export interface CartItem {
   category: string;
   length: string;
   quantity: number;
+  isWholesale?: boolean;
+  moqQuantity?: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: { id: string; name: string; price: number; image: string; category: string }, length: string, quantity: number) => void;
+  addToCart: (product: { id: string; name: string; price: number; image: string; category: string; is_wholesale?: boolean; moq_price?: number; moq_quantity?: number }, length: string, quantity: number) => void;
   removeFromCart: (cartItemId: string) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -57,13 +59,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [cartItems, isLoaded]);
 
   const addToCart = (
-    product: { id: string; name: string; price: number; image: string; category: string },
+    product: { id: string; name: string; price: number; image: string; category: string; is_wholesale?: boolean; moq_price?: number; moq_quantity?: number },
     length: string,
     quantity: number
   ) => {
     setCartItems((prevItems) => {
       const cartItemId = `${product.id}_${length}`;
       const existingIndex = prevItems.findIndex((item) => item.cartItemId === cartItemId);
+
+      const finalPrice = product.is_wholesale && product.moq_price ? product.moq_price : product.price;
 
       if (existingIndex > -1) {
         const newItems = [...prevItems];
@@ -76,11 +80,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             cartItemId,
             productId: product.id,
             name: product.name,
-            price: product.price,
+            price: finalPrice,
             image: product.image,
             category: product.category,
             length,
             quantity,
+            isWholesale: product.is_wholesale || false,
+            moqQuantity: product.moq_quantity || 10,
           },
         ];
       }
@@ -94,13 +100,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (cartItemId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeFromCart(cartItemId);
-      return;
-    }
-    setCartItems((prevItems) =>
-      prevItems.map((item) => (item.cartItemId === cartItemId ? { ...item, quantity } : item))
-    );
+    setCartItems((prevItems) => {
+      const item = prevItems.find((i) => i.cartItemId === cartItemId);
+      if (!item) return prevItems;
+
+      const minQty = item.isWholesale ? (item.moqQuantity || 10) : 1;
+      
+      if (quantity < minQty) {
+        alert(`Minimum order quantity for ${item.name} is ${minQty} units. To remove this wholesale item from your cart, please use the trash icon.`);
+        return prevItems; // Don't change quantity
+      }
+
+      if (quantity <= 0) {
+        return prevItems.filter((i) => i.cartItemId !== cartItemId);
+      }
+
+      return prevItems.map((i) => (i.cartItemId === cartItemId ? { ...i, quantity } : i));
+    });
   };
 
   const clearCart = () => {

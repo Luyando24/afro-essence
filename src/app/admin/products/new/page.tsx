@@ -20,6 +20,9 @@ export default function AdminNewProductPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [description, setDescription] = useState("");
   const [publishing, setPublishing] = useState(false);
+  const [isWholesale, setIsWholesale] = useState(false);
+  const [moqPrice, setMoqPrice] = useState("");
+  const [moqQuantity, setMoqQuantity] = useState("10");
 
   // File Upload States
   const [mainImageFile, setMainImageFile] = useState<File | null>(null);
@@ -99,6 +102,19 @@ export default function AdminNewProductPage() {
         throw new Error("Please enter a valid stock level.");
       }
 
+      let moqPriceVal = null;
+      let moqQtyVal = 10;
+      if (isWholesale) {
+        moqPriceVal = parseFloat(moqPrice);
+        moqQtyVal = parseInt(moqQuantity);
+        if (isNaN(moqPriceVal) || moqPriceVal <= 0) {
+          throw new Error("Please enter a valid wholesale MOQ price greater than 0.");
+        }
+        if (isNaN(moqQtyVal) || moqQtyVal < 1) {
+          throw new Error("Please enter a valid wholesale minimum order quantity (at least 1).");
+        }
+      }
+
       // 1. Upload main image if exists
       let finalMainImageUrl = imageUrl.trim() || "https://images.unsplash.com/photo-1565191946394-d2e4cb804791?auto=format&fit=crop&q=80&w=600";
       if (mainImageFile) {
@@ -127,7 +143,10 @@ export default function AdminNewProductPage() {
         images: finalSecondaryUrls,
         description: description.trim() || "Experience premium raw extensions with Afro Essence.",
         rating: 5.0,
-        reviews_count: 0
+        reviews_count: 0,
+        is_wholesale: isWholesale,
+        moq_price: moqPriceVal,
+        moq_quantity: moqQtyVal
       };
 
       const { error: insertError } = await supabase
@@ -320,6 +339,62 @@ export default function AdminNewProductPage() {
                     rows={4}
                     className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-950 resize-none shadow-sm"
                   />
+                </div>
+
+                {/* Wholesale Specifications */}
+                <div className="md:col-span-2 bg-gray-50/50 p-6 border border-gray-200 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="block text-xs font-bold text-gray-950 uppercase tracking-wider mb-1">
+                        Wholesale Product Toggler
+                      </span>
+                      <span className="block text-[10px] text-gray-400">
+                        Enable this to mark the product as wholesale with Minimum Order Quantity specifications.
+                      </span>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isWholesale}
+                        onChange={(e) => setIsWholesale(e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+
+                  {isWholesale && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-250/60 animate-in fade-in duration-300">
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                          Wholesale MOQ Price ($ USD) *
+                        </label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          required={isWholesale}
+                          value={moqPrice}
+                          onChange={(e) => setMoqPrice(e.target.value)}
+                          placeholder="89.99"
+                          className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-955 shadow-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-gray-700 uppercase tracking-wider mb-1.5">
+                          Minimum Order Quantity (MOQ) *
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          required={isWholesale}
+                          value={moqQuantity}
+                          onChange={(e) => setMoqQuantity(e.target.value)}
+                          placeholder="10"
+                          className="w-full text-xs border border-gray-300 bg-white rounded p-3 outline-none focus:ring-1 focus:ring-primary text-gray-955 shadow-sm"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
               </div>
