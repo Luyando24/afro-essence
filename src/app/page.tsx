@@ -4,6 +4,7 @@ import { products as fallbackProducts } from "@/data/products";
 import { ArrowRight, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import PriceDisplay from "@/components/PriceDisplay";
+import NewsletterForm from "@/components/NewsletterForm";
 
 export default async function Home() {
   // Fetch products from Supabase
@@ -174,22 +175,15 @@ export default async function Home() {
 
       {/* Newsletter / CTA Section */}
       <section className="py-20 bg-secondary text-white relative overflow-hidden">
-         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-           <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">Join the Afro Essence Family</h2>
-           <p className="text-lg text-gray-300 mb-8">
-             Be the first to know about new drops, exclusive sales, and hair care tips.
-           </p>
-           <form className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
-             <input
-               type="email"
-               placeholder="Enter your email address"
-               className="flex-1 px-6 py-3 rounded-md bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
-             />
-             <button className="px-8 py-3 bg-primary text-white font-bold rounded-md hover:bg-white hover:text-primary transition-colors duration-300">
-               Subscribe
-             </button>
-           </form>
-         </div>
+        <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Join the Afro Essence Family</h2>
+          <p className="text-lg text-gray-300 mb-10">
+            Be the first to know about new drops, exclusive sales, and hair care tips.
+          </p>
+          <div className="relative">
+            <NewsletterForm />
+          </div>
+        </div>
       </section>
     </div>
   );

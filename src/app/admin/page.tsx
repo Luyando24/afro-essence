@@ -29,7 +29,11 @@ import {
   Upload,
   Menu,
   X,
-  Settings
+  Settings,
+  Mail,
+  Send,
+  Download,
+  Users
 } from "lucide-react";
 import { useAuth } from "@/components/AuthContext";
 import { supabase } from "@/lib/supabase";
@@ -41,7 +45,7 @@ export default function AdminDashboardPage() {
   const { formatPrice } = useCurrency();
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "reviews" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "products" | "orders" | "reviews" | "settings" | "newsletter">("overview");
 
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -50,6 +54,7 @@ export default function AdminDashboardPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [subscribers, setSubscribers] = useState<any[]>([]);
   const [storeSettings, setStoreSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -69,6 +74,11 @@ export default function AdminDashboardPage() {
 
   // Edit stock buffer state
   const [stockEditValues, setStockEditValues] = useState<Record<string, number>>({});
+
+  // Newsletter email broadcast state
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailBody, setEmailBody] = useState("");
+  const [subscriberSearch, setSubscriberSearch] = useState("");
 
   // Fetch Dataset
   const loadAdminDataset = async () => {
@@ -124,6 +134,13 @@ export default function AdminDashboardPage() {
         }
       }
 
+      // 5. Fetch Newsletter Subscribers
+      const { data: subData } = await supabase
+        .from("newsletter_subscribers")
+        .select("*")
+        .order("subscribed_at", { ascending: false });
+      setSubscribers(subData || []);
+
     } catch (err: any) {
       console.error("Dashboard database fetch failed:", err);
       setError(err.message || "Failed to load dashboard parameters. Please check your credentials.");
@@ -148,7 +165,7 @@ export default function AdminDashboardPage() {
     if (typeof window !== "undefined") {
       const searchParams = new URLSearchParams(window.location.search);
       const tabParam = searchParams.get("tab");
-      if (tabParam === "products" || tabParam === "orders" || tabParam === "reviews" || tabParam === "overview" || tabParam === "settings") {
+      if (tabParam === "products" || tabParam === "orders" || tabParam === "reviews" || tabParam === "overview" || tabParam === "settings" || tabParam === "newsletter") {
         setActiveTab(tabParam as any);
       }
     }
@@ -239,6 +256,45 @@ export default function AdminDashboardPage() {
       console.error("Failed to delete review:", err);
       alert("Failed to delete review: " + err.message);
     }
+  };
+
+  // Delete subscriber
+  const handleDeleteSubscriber = async (subscriberId: string) => {
+    if (!confirm("Remove this subscriber from the mailing list?")) return;
+    try {
+      const { error: delError } = await supabase
+        .from("newsletter_subscribers")
+        .delete()
+        .eq("id", subscriberId);
+      if (delError) throw delError;
+      setSubscribers(prev => prev.filter(s => s.id !== subscriberId));
+    } catch (err: any) {
+      alert("Failed to remove subscriber: " + err.message);
+    }
+  };
+
+  // Export subscribers as CSV
+  const handleExportCSV = () => {
+    const activeOnly = subscribers.filter(s => s.is_active);
+    const csv = ["Email,Subscribed At", ...activeOnly.map(s => `${s.email},${s.subscribed_at}`)].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "afroessence_subscribers.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Send newsletter via mailto BCC
+  const handleSendNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    const activeEmails = subscribers.filter(s => s.is_active).map(s => s.email);
+    if (activeEmails.length === 0) { alert("No active subscribers to email."); return; }
+    const bcc = activeEmails.join(",");
+    const subject = encodeURIComponent(emailSubject);
+    const body = encodeURIComponent(emailBody);
+    window.open(`mailto:?bcc=${bcc}&subject=${subject}&body=${body}`, "_blank");
   };
 
   // Logo File Change
@@ -477,6 +533,23 @@ export default function AdminDashboardPage() {
             <Settings className="h-4 w-4 mr-3 shrink-0" /> 
             <span>Store Settings</span>
           </button>
+
+          <button
+            onClick={() => { setActiveTab("newsletter"); setIsMobileMenuOpen(false); }}
+            className={`w-full flex items-center px-4 py-3 rounded text-sm font-semibold transition-all ${
+              activeTab === "newsletter"
+                ? "bg-primary text-white shadow-md shadow-primary/20"
+                : "text-gray-600 hover:bg-gray-100/80 hover:text-gray-900"
+            }`}
+          >
+            <Mail className="h-4 w-4 mr-3 shrink-0" />
+            <span>Newsletter</span>
+            {subscribers.length > 0 && (
+              <span className="ml-auto bg-primary/20 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {subscribers.filter(s => s.is_active).length}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* User profile section & Sign Out */}
@@ -528,8 +601,9 @@ export default function AdminDashboardPage() {
                   {activeTab === "orders" && <ShoppingBag className="h-5 w-5 text-primary" />}
                   {activeTab === "reviews" && <MessageSquare className="h-5 w-5 text-primary" />}
                   {activeTab === "settings" && <Settings className="h-5 w-5 text-primary" />}
+                  {activeTab === "newsletter" && <Mail className="h-5 w-5 text-primary" />}
                 </span>
-                <span>{activeTab === "overview" ? "Dashboard Overview" : activeTab === "settings" ? "Store Settings" : activeTab + " Manager"}</span>
+                <span>{activeTab === "overview" ? "Dashboard Overview" : activeTab === "settings" ? "Store Settings" : activeTab === "newsletter" ? "Newsletter Manager" : activeTab + " Manager"}</span>
               </h2>
             </div>
           </div>
@@ -1472,6 +1546,170 @@ export default function AdminDashboardPage() {
                   ) : (
                     <div className="text-sm text-gray-500">Settings not found. Fetching...</div>
                   )}
+                </div>
+              </div>
+            )}
+            {/* 6. NEWSLETTER TAB */}
+            {activeTab === "newsletter" && (
+              <div className="space-y-8">
+
+                {/* Stats Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div>
+                      <span className="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Total Subscribers</span>
+                      <span className="text-3xl font-bold text-gray-900">{subscribers.length}</span>
+                    </div>
+                    <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                      <Users className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div>
+                      <span className="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Active Subscribers</span>
+                      <span className="text-3xl font-bold text-green-600">{subscribers.filter(s => s.is_active).length}</span>
+                    </div>
+                    <div className="h-12 w-12 bg-green-50 rounded-full flex items-center justify-center text-green-500">
+                      <Mail className="h-6 w-6" />
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm flex items-center justify-between">
+                    <div>
+                      <span className="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Unsubscribed</span>
+                      <span className="text-3xl font-bold text-gray-400">{subscribers.filter(s => !s.is_active).length}</span>
+                    </div>
+                    <div className="h-12 w-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+                      <Users className="h-6 w-6" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+                  {/* Subscriber List */}
+                  <div className="lg:col-span-3 bg-white border border-gray-100 rounded-lg shadow-sm overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between gap-4 flex-wrap">
+                      <h3 className="font-serif text-base font-bold text-gray-900">Subscriber List</h3>
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+                          <input
+                            type="text"
+                            value={subscriberSearch}
+                            onChange={e => setSubscriberSearch(e.target.value)}
+                            placeholder="Search emails..."
+                            className="pl-9 pr-3 py-1.5 text-xs border border-gray-200 rounded bg-gray-50 outline-none focus:ring-1 focus:ring-primary w-44"
+                          />
+                        </div>
+                        <button
+                          onClick={handleExportCSV}
+                          className="flex items-center gap-1.5 text-xs font-bold text-primary border border-primary/30 bg-primary/5 hover:bg-primary/10 px-3 py-1.5 rounded transition-all"
+                          title="Export as CSV"
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          Export CSV
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-100 text-gray-500">
+                            <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider">Email</th>
+                            <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider">Subscribed</th>
+                            <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider">Status</th>
+                            <th className="px-5 py-3 text-xs font-bold uppercase tracking-wider text-center">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {subscribers
+                            .filter(s => s.email.toLowerCase().includes(subscriberSearch.toLowerCase()))
+                            .map(s => (
+                              <tr key={s.id} className="hover:bg-gray-50/50">
+                                <td className="px-5 py-3 font-medium text-gray-800 text-xs">{s.email}</td>
+                                <td className="px-5 py-3 text-gray-500 text-xs">{new Date(s.subscribed_at).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</td>
+                                <td className="px-5 py-3">
+                                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                    s.is_active
+                                      ? "bg-green-50 text-green-700 border-green-200"
+                                      : "bg-gray-100 text-gray-500 border-gray-200"
+                                  }`}>
+                                    {s.is_active ? "Active" : "Inactive"}
+                                  </span>
+                                </td>
+                                <td className="px-5 py-3 text-center">
+                                  <button
+                                    onClick={() => handleDeleteSubscriber(s.id)}
+                                    className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-all"
+                                    title="Remove subscriber"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          {subscribers.length === 0 && (
+                            <tr>
+                              <td colSpan={4} className="px-5 py-12 text-center text-gray-400 text-sm">
+                                No subscribers yet. Share your newsletter form to grow your list!
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Send Email Broadcast */}
+                  <div className="lg:col-span-2 bg-white border border-gray-100 rounded-lg shadow-sm p-6 space-y-5">
+                    <div>
+                      <h3 className="font-serif text-base font-bold text-gray-900 mb-1">Send Email Broadcast</h3>
+                      <p className="text-xs text-gray-500 leading-relaxed">
+                        Compose a message to send to all <strong>{subscribers.filter(s => s.is_active).length}</strong> active subscribers. Your default email client will open with all emails pre-filled as BCC.
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleSendNewsletter} className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Subject Line</label>
+                        <input
+                          type="text"
+                          required
+                          value={emailSubject}
+                          onChange={e => setEmailSubject(e.target.value)}
+                          placeholder="e.g. New Collection Drop 🔥"
+                          className="w-full text-sm border border-gray-200 rounded-md p-2.5 outline-none focus:ring-1 focus:ring-primary bg-gray-50"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Message Body</label>
+                        <textarea
+                          required
+                          rows={7}
+                          value={emailBody}
+                          onChange={e => setEmailBody(e.target.value)}
+                          placeholder="Write your email content here..."
+                          className="w-full text-sm border border-gray-200 rounded-md p-2.5 outline-none focus:ring-1 focus:ring-primary bg-gray-50 resize-none"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={subscribers.filter(s => s.is_active).length === 0}
+                        className="w-full bg-primary text-white py-3 rounded-md font-bold text-sm hover:bg-secondary transition-colors shadow-md flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        <Send className="h-4 w-4" />
+                        Send to {subscribers.filter(s => s.is_active).length} Subscribers
+                      </button>
+
+                      <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+                        Opens your default email client. All recipient emails are added as BCC to protect privacy.
+                      </p>
+                    </form>
+                  </div>
+
                 </div>
               </div>
             )}
