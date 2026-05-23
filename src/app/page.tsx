@@ -5,6 +5,7 @@ import { ArrowRight, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import PriceDisplay from "@/components/PriceDisplay";
 import NewsletterForm from "@/components/NewsletterForm";
+import MarqueeBanner from "@/components/MarqueeBanner";
 
 export default async function Home() {
   // Fetch products from Supabase
@@ -28,7 +29,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative text-white overflow-hidden" style={{ minHeight: "100dvh" }}>
+      <section className="relative text-white overflow-hidden" style={{ minHeight: "70vh" }}>
         {/* Video Background */}
         <video
           autoPlay
@@ -52,7 +53,7 @@ export default async function Home() {
         <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.65) 100%)" }} />
 
         {/* Content */}
-        <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8" style={{ minHeight: "100dvh" }}>
+        <div className="relative z-20 flex flex-col items-center justify-center text-center px-4 sm:px-6 lg:px-8" style={{ minHeight: "70vh" }}>
           <div className="max-w-3xl space-y-8">
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
@@ -71,6 +72,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Marquee ticker */}
+      <MarqueeBanner />
 
       {/* About Section */}
       <section className="py-20 bg-white dark:bg-zinc-900">
