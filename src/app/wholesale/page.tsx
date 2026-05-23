@@ -97,7 +97,7 @@ export default function WholesalePage() {
               Premium Wholesale Catalog
             </h1>
             <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-              Scale your salon, beauty supply shop, or brand with Afro Essence virgin hair extensions. Enjoy discounted prices with minimum order quantity (MOQ) limits per item. Place your wholesale orders directly through our standard checkout.
+              Scale your salon, beauty supply shop, or brand with Afro Essence 100% Kanekalon extensions. Enjoy discounted prices with minimum order quantity (MOQ) limits per item. Place your wholesale orders directly through our standard checkout.
             </p>
             <div className="flex flex-wrap gap-4 pt-2 text-xs text-gray-400">
               <span className="flex items-center gap-1"><Info className="h-4 w-4 text-primary" /> Special MOQ wholesale pricing per unit</span>

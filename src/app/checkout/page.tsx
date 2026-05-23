@@ -18,14 +18,14 @@ export default function CheckoutPage() {
   const { formatPrice } = useCurrency();
   const { settings } = useStoreSettings();
 
-  const globalWholesaleMoq = settings?.global_wholesale_moq ?? 10;
+  const globalWholesaleMoq = Number(settings?.global_wholesale_moq ?? 500.00);
   
   const hasWholesaleItems = cartItems.some(item => item.isWholesale);
-  const totalWholesaleQuantity = cartItems
+  const totalWholesaleSubtotal = cartItems
     .filter(item => item.isWholesale)
-    .reduce((sum, item) => sum + item.quantity, 0);
+    .reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleQuantity >= globalWholesaleMoq;
+  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleSubtotal >= globalWholesaleMoq;
 
   // Form State
   const [email, setEmail] = useState("");
@@ -62,7 +62,7 @@ export default function CheckoutPage() {
     }
 
     if (!isWholesaleMoqValid) {
-      setErrorMessage(`Wholesale MOQ Not Met: You must purchase a minimum of ${globalWholesaleMoq} wholesale units in total to check out. You currently have ${totalWholesaleQuantity} units.`);
+      setErrorMessage(`Wholesale MOQ Not Met: You must purchase a minimum of ${formatPrice(globalWholesaleMoq)} in wholesale products to check out. Your current wholesale subtotal is ${formatPrice(totalWholesaleSubtotal)}.`);
       return;
     }
 
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
 
         {!isWholesaleMoqValid && (
           <div className="mb-8 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 text-sm font-semibold rounded-md flex items-center gap-2">
-            <span>⚠️ Wholesale Requirement: Your cart must contain at least {globalWholesaleMoq} wholesale units in total to place a wholesale order. You currently have {totalWholesaleQuantity} wholesale units in your cart. Please add more wholesale items or increase their quantities to check out.</span>
+            <span>⚠️ Wholesale Requirement: Your cart must contain a minimum of {formatPrice(globalWholesaleMoq)} in wholesale products to place a wholesale order. Your current wholesale subtotal is {formatPrice(totalWholesaleSubtotal)}. Please add more wholesale items or increase their quantities to check out.</span>
           </div>
         )}
 

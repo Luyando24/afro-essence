@@ -347,7 +347,7 @@ export default function AdminDashboardPage() {
 
       const parsedAudRate = parseFloat(storeSettings.aud_rate) || 1.5;
       const parsedNgnRate = parseFloat(storeSettings.ngn_rate) || 1500.0;
-      const parsedGlobalMoq = parseInt(storeSettings.global_wholesale_moq) || 10;
+      const parsedGlobalMoq = parseFloat(storeSettings.global_wholesale_moq) || 500.00;
 
       const { error: settingsError } = await supabase
         .from("store_settings")
@@ -1618,19 +1618,20 @@ export default function AdminDashboardPage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-                              Global Wholesale MOQ (Units)
+                              Global Wholesale MOQ ($ USD)
                             </label>
                             <input
                               type="number"
-                              min="1"
+                              step="0.01"
+                              min="0"
                               value={storeSettings.global_wholesale_moq ?? ""}
                               onChange={(e) => setStoreSettings({...storeSettings, global_wholesale_moq: e.target.value})}
                               className="w-full text-sm border border-gray-300 rounded p-2 outline-none focus:ring-1 focus:ring-primary text-gray-950"
-                              placeholder="e.g. 10"
+                              placeholder="e.g. 500.00"
                               required
                             />
                             <span className="block text-[10px] text-gray-400 mt-1">
-                              Sets the minimum number of total wholesale items a customer must have in their cart to checkout.
+                              Sets the minimum subtotal value (in USD) of wholesale items a customer must have in their cart to checkout.
                             </span>
                           </div>
                         </div>

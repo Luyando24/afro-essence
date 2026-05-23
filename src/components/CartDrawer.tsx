@@ -21,13 +21,13 @@ export default function CartDrawer() {
   const { formatPrice } = useCurrency();
   const { settings } = useStoreSettings();
 
-  const globalWholesaleMoq = settings?.global_wholesale_moq ?? 10;
+  const globalWholesaleMoq = Number(settings?.global_wholesale_moq ?? 500.00);
   const hasWholesaleItems = cartItems.some(item => item.isWholesale);
-  const totalWholesaleQuantity = cartItems
+  const totalWholesaleSubtotal = cartItems
     .filter(item => item.isWholesale)
-    .reduce((sum, item) => sum + item.quantity, 0);
+    .reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleQuantity >= globalWholesaleMoq;
+  const isWholesaleMoqValid = !hasWholesaleItems || totalWholesaleSubtotal >= globalWholesaleMoq;
   
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -201,7 +201,7 @@ export default function CartDrawer() {
 
               {!isWholesaleMoqValid && (
                 <p className="text-[11px] text-amber-600 dark:text-amber-500 bg-amber-50 dark:bg-amber-955/20 border border-amber-250 dark:border-amber-900/30 p-2.5 rounded font-bold leading-normal">
-                  ⚠️ Wholesale MOQ Not Met: You must purchase a minimum of {globalWholesaleMoq} wholesale units in total to check out. You have {totalWholesaleQuantity} units.
+                  ⚠️ Wholesale MOQ Not Met: You must purchase a minimum of {formatPrice(globalWholesaleMoq)} in wholesale products to check out. Your current wholesale subtotal is {formatPrice(totalWholesaleSubtotal)}.
                 </p>
               )}
  
