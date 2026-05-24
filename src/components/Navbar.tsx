@@ -72,7 +72,7 @@ export default function Navbar() {
               style={{ color: "#C9A84C" }}
             >
               {settings?.logo_url ? (
-                <div className="relative h-12 w-44 sm:w-52">
+                <div className="relative h-16 w-56 sm:w-64">
                   <Image
                     src={settings.logo_url}
                     alt="Afro Essence Logo"
