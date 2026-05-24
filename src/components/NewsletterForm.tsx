@@ -69,7 +69,8 @@ export default function NewsletterForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="px-8 py-3 bg-primary text-white font-bold rounded-md hover:bg-white hover:text-primary transition-colors duration-300 disabled:opacity-60 flex items-center justify-center gap-2 whitespace-nowrap"
+        className="px-8 py-3 font-bold rounded-xl transition-all duration-300 disabled:opacity-60 flex items-center justify-center gap-2 whitespace-nowrap hover:opacity-90 hover:shadow-lg"
+        style={{ backgroundColor: "#C9A84C", color: "#000" }}
       >
         {status === "loading" ? (
           <><Loader2 className="h-4 w-4 animate-spin" /> Subscribing...</>

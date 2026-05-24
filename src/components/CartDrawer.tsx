@@ -74,42 +74,45 @@ export default function CartDrawer() {
         {/* Drawer container with slide animation */}
         <div 
           ref={drawerRef}
-          className="w-screen max-w-md bg-white dark:bg-zinc-900 shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out border-l border-primary/20"
+          className="w-screen max-w-md shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out border-l"
+          style={{ backgroundColor: "#FAFAF8", borderColor: "#E8E2D9" }}
         >
           {/* Header */}
-          <div className="px-6 py-5 border-b border-gray-100 dark:border-zinc-800 flex items-center justify-between">
+          <div className="px-6 py-5 border-b flex items-center justify-between" style={{ borderColor: "#E8E2D9", backgroundColor: "#fff" }}>
             <div className="flex items-center space-x-2">
-              <ShoppingBag className="h-6 w-6 text-primary" />
-              <h2 className="text-xl font-serif font-bold text-gray-900 dark:text-white">
+              <ShoppingBag className="h-5 w-5" style={{ color: "#C9A84C" }} />
+              <h2 className="text-lg font-serif font-bold" style={{ color: "#1A1A1A" }}>
                 Your Crown ({cartCount})
               </h2>
             </div>
             <button
               onClick={() => setIsCartOpen(false)}
-              className="rounded-md text-gray-400 hover:text-primary transition-colors focus:outline-none"
+              className="w-8 h-8 rounded-full flex items-center justify-center transition-colors hover:bg-gray-100"
+              style={{ color: "#999" }}
             >
-              <X className="h-6 w-6" />
+              <X className="h-4 w-4" />
             </button>
           </div>
 
           {/* Cart Items List */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6" style={{ backgroundColor: "#FAFAF8" }}>
             {cartItems.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
-                <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(201,168,76,0.1)", color: "#C9A84C" }}>
                   <ShoppingBag className="h-10 w-10" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-gray-900 dark:text-white mb-1">
+                  <h3 className="font-serif text-lg font-bold mb-1" style={{ color: "#1A1A1A" }}>
                     Your cart is empty
                   </h3>
-                  <p className="text-gray-500 text-sm max-w-xs">
+                  <p className="text-sm max-w-xs" style={{ color: "#888" }}>
                     Choose from our gorgeous collection of premium bundles and wigs to start your style journey.
                   </p>
                 </div>
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="bg-primary text-white px-6 py-2 rounded-md font-medium hover:bg-secondary transition-colors"
+                  className="px-6 py-2.5 rounded-full font-bold text-sm transition-all hover:opacity-90"
+                  style={{ backgroundColor: "#C9A84C", color: "#000" }}
                 >
                   Shop Extensions
                 </button>
@@ -118,10 +121,11 @@ export default function CartDrawer() {
               cartItems.map((item) => (
                 <div 
                   key={item.cartItemId} 
-                  className="flex items-start space-x-4 pb-6 border-b border-gray-100 dark:border-zinc-800 last:border-b-0"
+                  className="flex items-start space-x-4 pb-6 border-b last:border-b-0"
+                  style={{ borderColor: "#F0EBE4" }}
                 >
                   {/* Thumbnail */}
-                  <div className="w-20 h-24 relative rounded-md overflow-hidden bg-gray-100 border border-gray-100 dark:border-zinc-800 flex-shrink-0">
+                  <div className="w-20 h-24 relative rounded-xl overflow-hidden flex-shrink-0" style={{ backgroundColor: "#F0EBE4" }}>
                     <Image
                       src={item.image}
                       alt={item.name}
@@ -133,7 +137,7 @@ export default function CartDrawer() {
                   {/* Info */}
                   <div className="flex-1 flex flex-col min-w-0">
                     <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate pr-2 flex items-center gap-1.5">
+                      <h4 className="text-sm font-bold truncate pr-2 flex items-center gap-1.5" style={{ color: "#1A1A1A" }}>
                         {item.name}
                         {item.isWholesale && (
                           <span className="bg-amber-100 dark:bg-amber-950/40 text-amber-800 dark:text-amber-400 text-[8px] font-extrabold px-1.5 py-0.5 rounded border border-amber-250 dark:border-amber-900/30 uppercase tracking-wide">
@@ -141,12 +145,12 @@ export default function CartDrawer() {
                           </span>
                         )}
                       </h4>
-                      <p className="text-sm font-semibold text-primary">
+                      <p className="text-sm font-bold" style={{ color: "#C9A84C" }}>
                         {formatPrice(item.price * item.quantity)}
                       </p>
                     </div>
                     
-                    <p className="text-xs text-gray-500 mt-0.5 flex flex-wrap gap-2">
+                    <p className="text-xs mt-0.5 flex flex-wrap gap-2" style={{ color: "#999" }}>
                       <span>Length: <span className="font-medium text-gray-800 dark:text-gray-200">{item.length}</span></span>
                       {item.isWholesale && (
                         <span className="text-[10px] text-amber-600 dark:text-amber-500 font-extrabold">
@@ -157,19 +161,21 @@ export default function CartDrawer() {
 
                     {/* Quantity Controls & Delete */}
                     <div className="flex justify-between items-center mt-auto pt-4">
-                      <div className="flex items-center border border-gray-300 dark:border-zinc-700 rounded-md">
+                      <div className="flex items-center border rounded-xl" style={{ borderColor: "#E8E2D9" }}>
                         <button
                           onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
-                          className="px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                          className="px-2.5 py-1.5 rounded-l-xl hover:bg-gray-100 transition-colors"
+                          style={{ color: "#777" }}
                         >
                           <Minus className="h-3 w-3" />
                         </button>
-                        <span className="px-3 text-xs font-semibold text-gray-900 dark:text-white">
+                        <span className="px-3 text-xs font-bold" style={{ color: "#1A1A1A" }}>
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                          className="px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-zinc-800"
+                          className="px-2.5 py-1.5 rounded-r-xl hover:bg-gray-100 transition-colors"
+                          style={{ color: "#777" }}
                         >
                           <Plus className="h-3 w-3" />
                         </button>
@@ -177,7 +183,10 @@ export default function CartDrawer() {
 
                       <button
                         onClick={() => removeFromCart(item.cartItemId)}
-                        className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                        className="p-1.5 rounded-full hover:bg-red-50 transition-colors"
+                        style={{ color: "#ccc" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#ef4444")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "#ccc")}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -190,12 +199,12 @@ export default function CartDrawer() {
 
           {/* Footer summary */}
           {cartItems.length > 0 && (
-            <div className="px-6 py-6 bg-gray-50 dark:bg-zinc-950 border-t border-gray-100 dark:border-zinc-800 space-y-4">
-              <div className="flex justify-between text-base font-medium text-gray-900 dark:text-white">
+            <div className="px-6 py-6 border-t space-y-4" style={{ backgroundColor: "#fff", borderColor: "#E8E2D9" }}>
+              <div className="flex justify-between text-sm font-semibold" style={{ color: "#1A1A1A" }}>
                 <span>Subtotal</span>
-                <span className="font-semibold">{formatPrice(cartTotal)}</span>
+                <span className="font-bold" style={{ color: "#C9A84C" }}>{formatPrice(cartTotal)}</span>
               </div>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs" style={{ color: "#999" }}>
                 Shipping and taxes calculated at checkout.
               </p>
 
@@ -210,7 +219,8 @@ export default function CartDrawer() {
                   <Link
                     href="/checkout"
                     onClick={() => setIsCartOpen(false)}
-                    className="w-full bg-primary text-white py-3 rounded-md font-bold text-center hover:bg-secondary transition-colors duration-300 shadow-md block"
+                    className="w-full py-3.5 rounded-xl font-bold text-sm text-center transition-all hover:opacity-90 hover:shadow-lg block"
+                    style={{ backgroundColor: "#C9A84C", color: "#000" }}
                   >
                     Proceed to Checkout
                   </Link>
@@ -224,7 +234,8 @@ export default function CartDrawer() {
                 )}
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full bg-transparent border border-gray-300 dark:border-zinc-700 text-gray-700 dark:text-gray-300 py-3 rounded-md font-medium text-center hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="w-full py-3 rounded-xl font-semibold text-sm text-center border transition-all hover:bg-gray-50"
+                  style={{ borderColor: "#E8E2D9", color: "#555" }}
                 >
                   Continue Shopping
                 </button>

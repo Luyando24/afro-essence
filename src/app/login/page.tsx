@@ -76,18 +76,18 @@ function LoginForm() {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-24 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-primary/20 rounded-lg shadow-xl overflow-hidden relative">
+    <div style={{ backgroundColor: "#FAFAF8", minHeight: "100vh" }} className="py-24 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full rounded-3xl border shadow-xl overflow-hidden relative" style={{ backgroundColor: "#fff", borderColor: "#E8E2D9" }}>
         
-        {/* Glow Accent */}
-        <div className="h-2 w-full bg-gradient-to-r from-primary via-secondary to-primary" />
+        {/* Gold accent top bar */}
+        <div className="h-[3px] w-full" style={{ background: "linear-gradient(90deg, transparent 0%, #C9A84C 30%, #E8C96A 50%, #C9A84C 70%, transparent 100%)" }} />
         
         <div className="p-8 space-y-6">
           <div className="text-center">
-            <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-white tracking-wider flex items-center justify-center gap-1.5">
+            <h1 className="font-serif text-3xl font-bold tracking-wider flex items-center justify-center gap-1.5" style={{ color: "#1A1A1A" }}>
               <Sparkles className="h-6 w-6 text-primary animate-pulse" /> AFRO ESSENCE
             </h1>
-            <p className="text-gray-500 text-sm mt-2">
+            <p className="text-sm mt-2" style={{ color: "#888" }}>
               {isRegistering 
                 ? "Join our club of luxurious natural crowns" 
                 : "Welcome back! Access your orders and saved products"}
@@ -95,17 +95,18 @@ function LoginForm() {
           </div>
 
           {/* Toggle Tabs */}
-          <div className="grid grid-cols-2 gap-2 bg-gray-100 dark:bg-zinc-800 p-1.5 rounded-md">
+          <div className="grid grid-cols-2 gap-2 p-1.5 rounded-2xl" style={{ backgroundColor: "#F5F2EE" }}>
             <button
               onClick={() => {
                 setIsRegistering(false);
                 setMessage("");
               }}
-              className={`py-2 text-xs font-bold rounded-md transition-all duration-300 ${
+              className={`py-2.5 text-xs font-bold rounded-xl transition-all duration-300 ${
                 !isRegistering
-                  ? "bg-white dark:bg-zinc-900 text-primary shadow-sm"
-                  : "text-gray-500 hover:text-gray-955 dark:hover:text-white"
+                  ? "bg-white shadow-sm"
+                  : "hover:text-gray-700"
               }`}
+              style={{ color: !isRegistering ? "#C9A84C" : "#999" }}
             >
               Sign In
             </button>
@@ -114,11 +115,12 @@ function LoginForm() {
                 setIsRegistering(true);
                 setMessage("");
               }}
-              className={`py-2 text-xs font-bold rounded-md transition-all duration-300 ${
+              className={`py-2.5 text-xs font-bold rounded-xl transition-all duration-300 ${
                 isRegistering
-                  ? "bg-white dark:bg-zinc-900 text-primary shadow-sm"
-                  : "text-gray-500 hover:text-gray-955 dark:hover:text-white"
+                  ? "bg-white shadow-sm"
+                  : "hover:text-gray-700"
               }`}
+              style={{ color: isRegistering ? "#C9A84C" : "#999" }}
             >
               Register
             </button>
@@ -140,7 +142,7 @@ function LoginForm() {
             
             {/* Email Input */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#555" }}>
                 Email Address
               </label>
               <div className="relative">
@@ -153,14 +155,17 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm rounded-xl p-3 pl-10 outline-none transition-all border"
+                  style={{ borderColor: "#E8E2D9", backgroundColor: "#FAFAF8", color: "#1A1A1A" }}
+                  onFocus={(e) => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={(e) => (e.target.style.borderColor = "#E8E2D9")}
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color: "#555" }}>
                 Password
               </label>
               <div className="relative">
@@ -173,7 +178,10 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full text-sm border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded p-3 pl-10 outline-none focus:ring-1 focus:ring-primary text-gray-950 dark:text-white"
+                  className="w-full text-sm rounded-xl p-3 pl-10 outline-none transition-all border"
+                  style={{ borderColor: "#E8E2D9", backgroundColor: "#FAFAF8", color: "#1A1A1A" }}
+                  onFocus={(e) => (e.target.style.borderColor = "#C9A84C")}
+                  onBlur={(e) => (e.target.style.borderColor = "#E8E2D9")}
                 />
               </div>
             </div>
@@ -182,7 +190,8 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-white py-3 rounded font-bold hover:bg-secondary transition-colors text-sm shadow-md flex items-center justify-center space-x-1.5"
+              className="w-full py-3.5 rounded-xl font-bold text-sm flex items-center justify-center space-x-1.5 transition-all hover:opacity-90 hover:shadow-lg"
+              style={{ backgroundColor: "#C9A84C", color: "#000" }}
             >
               {loading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -205,7 +214,8 @@ function LoginForm() {
             <span className="text-xs text-gray-400 mb-3">Or continue as guest</span>
             <Link
               href={redirectTo}
-              className="text-sm text-primary hover:text-secondary font-bold hover:underline inline-flex items-center"
+              className="text-sm font-bold hover:underline inline-flex items-center"
+              style={{ color: "#C9A84C" }}
             >
               Shop Without Login <ArrowRight className="ml-1.5 h-4 w-4" />
             </Link>

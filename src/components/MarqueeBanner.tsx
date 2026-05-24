@@ -39,25 +39,38 @@ export default async function MarqueeBanner() {
   const doubled = [...items, ...items];
 
   return (
-    <div className="relative bg-[#121212] border-y border-[#D4AF37]/20 py-3.5 overflow-hidden">
+    <div
+      className="relative py-3.5 overflow-hidden border-y"
+      style={{
+        backgroundColor: "#0A0A0A",
+        borderColor: "rgba(201,168,76,0.25)",
+      }}
+    >
       {/* Left fade */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to right, #121212, transparent)" }} />
+      <div
+        className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to right, #0A0A0A, transparent)" }}
+      />
       {/* Right fade */}
-      <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
-        style={{ background: "linear-gradient(to left, #121212, transparent)" }} />
+      <div
+        className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+        style={{ background: "linear-gradient(to left, #0A0A0A, transparent)" }}
+      />
 
       <div
         className="flex gap-0 whitespace-nowrap"
         style={{
-          animation: "marquee 30s linear infinite",
+          animation: "marquee 35s linear infinite",
           width: "max-content",
         }}
       >
         {doubled.map((item, i) => (
           <span key={i} className="inline-flex items-center gap-3 px-6">
-            <span className="text-[#D4AF37] text-[10px]">{item.icon}</span>
-            <span className="text-white/80 text-sm font-medium tracking-wide uppercase">
+            <span className="text-[10px]" style={{ color: "#C9A84C" }}>{item.icon}</span>
+            <span
+              className="text-xs font-semibold tracking-[0.15em] uppercase"
+              style={{ color: "rgba(255,255,255,0.65)" }}
+            >
               {item.label}
             </span>
           </span>

@@ -223,7 +223,7 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-40 space-y-4 bg-white dark:bg-zinc-950 min-h-screen">
+      <div className="flex flex-col items-center justify-center py-40 space-y-4 min-h-screen" style={{ backgroundColor: "#FAFAF8" }}>
         <Loader2 className="h-12 w-12 text-primary animate-spin" />
         <p className="text-gray-500 font-serif text-lg">Revealing your premium extensions...</p>
       </div>
@@ -237,7 +237,7 @@ export default function ProductDetailPage() {
   const displayReviewsCount = reviews.length > 0 ? reviews.length : (product.reviews_count || 12);
 
   return (
-    <div className="bg-white dark:bg-zinc-950 min-h-screen py-12">
+    <div className="min-h-screen py-12" style={{ backgroundColor: "#FAFAF8" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb / Back Link */}
         <div className="mb-8">
@@ -249,7 +249,7 @@ export default function ProductDetailPage() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
           {/* Image Gallery */}
           <div className="product-image-gallery space-y-4">
-            <div className="aspect-[4/5] relative rounded-lg overflow-hidden bg-gray-100 dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-md">
+            <div className="aspect-[4/5] relative rounded-2xl overflow-hidden border shadow-md" style={{ backgroundColor: "#F0EBE4", borderColor: "#E8E2D9" }}>
               <Image
                 src={selectedImage || product.image}
                 alt={product.name}
@@ -318,8 +318,8 @@ export default function ProductDetailPage() {
 
           {/* Product Info */}
           <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0 flex flex-col">
-            <span className="text-primary font-bold tracking-wider uppercase text-sm mb-1">{product.category}</span>
-            <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 dark:text-white tracking-tight">
+            <span className="text-primary font-bold tracking-wider uppercase text-xs mb-1" style={{ color: "#C9A84C" }}>{product.category}</span>
+            <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight" style={{ color: "#1A1A1A" }}>
               {product.name}
             </h1>
             
@@ -395,7 +395,7 @@ export default function ProductDetailPage() {
 
             <div className="mt-6">
               <h3 className="sr-only">Description</h3>
-              <div className="text-base text-gray-750 dark:text-gray-300 space-y-6 leading-relaxed">
+              <div className="text-base space-y-6 leading-relaxed" style={{ color: "#555" }}>
                 <p>{product.description}</p>
                 <p>
                   Experience the luxury of Afro Essence. Our extensions are carefully processed to ensure 
@@ -456,7 +456,8 @@ export default function ProductDetailPage() {
                       
                       <button 
                         onClick={() => addToCart(product, selectedLength, quantity)}
-                        className="flex-1 bg-primary border border-transparent rounded-md py-3.5 px-8 flex items-center justify-center text-base font-bold text-white hover:bg-secondary hover:shadow-lg transition-all duration-300 focus:outline-none"
+                      className="flex-1 py-3.5 px-8 flex items-center justify-center text-sm font-bold rounded-2xl transition-all duration-300 hover:opacity-90 hover:shadow-lg focus:outline-none"
+                         style={{ backgroundColor: "#C9A84C", color: "#000" }}
                       >
                         Add to Cart
                       </button>
@@ -513,8 +514,8 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Review Form */}
-              <div className="bg-gray-50 dark:bg-zinc-900/50 p-6 rounded-lg border border-primary/10 shadow-sm">
-                <h3 className="font-serif text-lg font-bold text-gray-900 dark:text-white mb-4">
+              <div className="p-6 rounded-2xl border shadow-sm" style={{ backgroundColor: "#fff", borderColor: "rgba(201,168,76,0.2)" }}>
+                <h3 className="font-serif text-lg font-bold mb-4" style={{ color: "#1A1A1A" }}>
                   Share Your Glow
                 </h3>
                 <form onSubmit={handleAddReview} className="space-y-4">
@@ -571,7 +572,8 @@ export default function ProductDetailPage() {
                   <button
                     type="submit"
                     disabled={submittingReview}
-                    className="w-full bg-primary text-white py-2.5 rounded font-bold hover:bg-secondary transition-colors text-sm shadow-md flex items-center justify-center space-x-1"
+                    className="w-full py-3 rounded-xl font-bold text-sm shadow-md flex items-center justify-center space-x-1 transition-all hover:opacity-90"
+                     style={{ backgroundColor: "#C9A84C", color: "#000" }}
                   >
                     {submittingReview ? <Loader2 className="h-4 w-4 animate-spin" /> : <span>Submit Review</span>}
                   </button>
@@ -594,7 +596,8 @@ export default function ProductDetailPage() {
                   {reviews.map((rev) => (
                     <div 
                       key={rev.id} 
-                      className="bg-gray-50/50 dark:bg-zinc-900/30 p-5 rounded-lg border border-gray-150 dark:border-zinc-800 flex flex-col space-y-2 shadow-sm"
+                      className="rounded-2xl border p-5 flex flex-col space-y-2 shadow-sm"
+                     style={{ backgroundColor: "#FAFAF8", borderColor: "#E8E2D9" }}
                     >
                       <div className="flex justify-between items-center">
                         <span className="font-bold text-sm text-gray-950 dark:text-white">{rev.name}</span>

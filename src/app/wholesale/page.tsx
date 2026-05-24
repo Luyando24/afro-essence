@@ -83,11 +83,11 @@ export default function WholesalePage() {
   });
 
   return (
-    <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-12">
+    <div className="min-h-screen py-12" style={{ backgroundColor: "#FAFAF8" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Wholesale Header Banner */}
-        <div className="bg-zinc-900 text-white rounded-2xl p-8 md:p-12 mb-12 border border-primary/20 relative overflow-hidden shadow-xl">
+        <div className="rounded-3xl p-8 md:p-12 mb-12 border relative overflow-hidden shadow-xl" style={{ backgroundColor: "#0A0A0A", borderColor: "rgba(201,168,76,0.2)" }}>
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10" />
           <div className="max-w-3xl space-y-4">
             <span className="inline-flex items-center text-xs font-bold text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full uppercase tracking-wider">
@@ -162,7 +162,7 @@ export default function WholesalePage() {
               
               return (
                 <Link href={`/products/${product.id}`} key={product.id} className="group">
-                  <div className="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-100 dark:border-zinc-800 hover:border-primary/20">
+                  <div className="rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1" style={{ backgroundColor: "#fff", border: "1px solid #E8E2D9" }}>
                     <div className="aspect-[4/5] relative overflow-hidden bg-gray-200">
                       <Image
                         src={product.image}

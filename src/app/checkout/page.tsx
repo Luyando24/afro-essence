@@ -171,7 +171,7 @@ export default function CheckoutPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-24 flex items-center justify-center">
+      <div className="min-h-screen py-24 flex items-center justify-center" style={{ backgroundColor: "#FAFAF8" }}>
         <div className="max-w-md w-full bg-white dark:bg-zinc-900 border border-primary/10 rounded-lg p-8 shadow-md text-center space-y-6">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mx-auto">
             <ShoppingBag className="h-8 w-8" />
@@ -196,7 +196,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-zinc-950 min-h-screen py-12">
+    <div className="min-h-screen py-12" style={{ backgroundColor: "#FAFAF8" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation */}
